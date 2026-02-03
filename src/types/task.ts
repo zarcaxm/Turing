@@ -8,4 +8,5 @@ export interface Task {
   subtasks: Task[];        // Nested child tasks
   createdAt: number;       // Timestamp
   expanded?: boolean;      // UI state for expand/collapse
+  context?: string;        // Additional details/context about the task
 }

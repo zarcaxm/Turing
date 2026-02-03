@@ -33,7 +33,7 @@ export function useTasks() {
   /**
    * Add a new task (root level or as subtask)
    */
-  const addTask = (title: string, parentId: string | null = null) => {
+  const addTask = (title: string, parentId: string | null = null, context?: string) => {
     if (!title.trim()) return;
 
     if (parentId === null) {
@@ -48,6 +48,7 @@ export function useTasks() {
         subtasks: [],
         createdAt: Date.now(),
         expanded: true,
+        ...(context && { context: context.trim() }),
       };
       setTasks([...tasks, newTask]);
     } else {
@@ -65,6 +66,7 @@ export function useTasks() {
               subtasks: [],
               createdAt: Date.now(),
               expanded: true,
+              ...(context && { context: context.trim() }),
             };
             return {
               ...task,

@@ -14,6 +14,7 @@ function App() {
     deleteTask,
     toggleComplete,
     toggleExpand,
+    updateTask,
   } = useTasks();
 
   // Theme state management
@@ -32,12 +33,12 @@ function App() {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   };
 
-  const handleAddRootTask = (title: string) => {
-    addTask(title, null);
+  const handleAddRootTask = (title: string, context?: string) => {
+    addTask(title, null, context);
   };
 
-  const handleAddSubtask = (parentId: string, title: string) => {
-    addTask(title, parentId);
+  const handleAddSubtask = (parentId: string, title: string, context?: string) => {
+    addTask(title, parentId, context);
   };
 
   return (
@@ -65,6 +66,7 @@ function App() {
         onDelete={deleteTask}
         onAddSubtask={handleAddSubtask}
         onToggleExpand={toggleExpand}
+        onUpdateTask={updateTask}
       />
     </div>
   );

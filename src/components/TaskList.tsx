@@ -6,8 +6,9 @@ interface TaskListProps {
   tasks: Task[];
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
-  onAddSubtask: (parentId: string, title: string) => void;
+  onAddSubtask: (parentId: string, title: string, context?: string) => void;
   onToggleExpand: (taskId: string) => void;
+  onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
 export function TaskList({
@@ -15,7 +16,8 @@ export function TaskList({
   onToggleComplete,
   onDelete,
   onAddSubtask,
-  onToggleExpand
+  onToggleExpand,
+  onUpdateTask
 }: TaskListProps) {
   const totalScore = calculateTotalScore(tasks);
   const totalTaskCount = countTasks(tasks);
@@ -48,6 +50,7 @@ export function TaskList({
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
               onToggleExpand={onToggleExpand}
+              onUpdateTask={onUpdateTask}
             />
           ))
         )}

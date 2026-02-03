@@ -6,8 +6,9 @@ interface TaskItemProps {
   task: Task;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
-  onAddSubtask: (parentId: string, title: string) => void;
+  onAddSubtask: (parentId: string, title: string, context?: string) => void;
   onToggleExpand: (taskId: string) => void;
+  onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
 export function TaskItem({
@@ -15,13 +16,26 @@ export function TaskItem({
   onToggleComplete,
   onDelete,
   onAddSubtask,
-  onToggleExpand
+  onToggleExpand,
+  onUpdateTask
 }: TaskItemProps) {
   const [showInput, setShowInput] = useState(false);
+  const [editingContext, setEditingContext] = useState(false);
+  const [contextValue, setContextValue] = useState(task.context || '');
 
-  const handleAddSubtask = (title: string) => {
-    onAddSubtask(task.id, title);
+  const handleAddSubtask = (title: string, context?: string) => {
+    onAddSubtask(task.id, title, context);
     setShowInput(false);
+  };
+
+  const handleSaveContext = () => {
+    onUpdateTask(task.id, { context: contextValue.trim() || undefined });
+    setEditingContext(false);
+  };
+
+  const handleCancelContext = () => {
+    setContextValue(task.context || '');
+    setEditingContext(false);
   };
 
   const hasSubtasks = task.subtasks.length > 0;
@@ -75,7 +89,49 @@ export function TaskItem({
         >
           ×
         </button>
+
+        {/* Edit context button */}
+        <button
+          className="task-context-btn"
+          onClick={() => setEditingContext(!editingContext)}
+          aria-label="Edit context"
+          title="Edit context/details"
+        >
+          ✎
+        </button>
       </div>
+
+      {/* Context display/edit */}
+      {(task.context || editingContext) && (
+        <div className="task-context" style={{ marginLeft: `${task.level * 20 + 40}px` }}>
+          {editingContext ? (
+            <div className="task-context-edit">
+              <textarea
+                className="task-context-input"
+                value={contextValue}
+                onChange={(e) => setContextValue(e.target.value)}
+                placeholder="> CONTEXT/DETAILS_"
+                autoFocus
+                rows={3}
+              />
+              <div className="task-context-actions">
+                <button onClick={handleSaveContext} className="task-context-save">
+                  [SAVE]
+                </button>
+                <button onClick={handleCancelContext} className="task-context-cancel">
+                  [CANCEL]
+                </button>
+              </div>
+            </div>
+          ) : (
+            task.context && (
+              <div className="task-context-display">
+                <span className="task-context-label">CONTEXT:</span> {task.context}
+              </div>
+            )
+          )}
+        </div>
+      )}
 
       {/* Subtask input */}
       {showInput && (
@@ -99,6 +155,7 @@ export function TaskItem({
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
               onToggleExpand={onToggleExpand}
+              onUpdateTask={onUpdateTask}
             />
           ))}
         </div>

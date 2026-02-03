@@ -306,6 +306,163 @@ body {
   background: var(--text-highlight);
 }
 
+/* Task Input Row */
+.task-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.task-input-row .task-input {
+  flex: 1;
+}
+
+.task-input-context-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 10px 12px;
+  transition: all 0.2s;
+  text-shadow: 0 0 5px var(--text-primary);
+  white-space: nowrap;
+}
+
+.task-input-context-toggle:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+  text-shadow: none;
+}
+
+.task-input-context {
+  width: 100%;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 10px;
+  outline: none;
+  margin-top: 10px;
+  resize: vertical;
+}
+
+.task-input-context::placeholder {
+  color: var(--text-dim);
+}
+
+.task-input-context:focus {
+  box-shadow: 0 0 10px var(--glow-color);
+  border-color: var(--text-highlight);
+}
+
+/* Context Button */
+.task-context-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.task-context-btn:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+}
+
+/* Context Display/Edit */
+.task-context {
+  margin-top: 8px;
+  margin-bottom: 5px;
+  padding: 8px;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--text-dim);
+  font-size: 14px;
+}
+
+.task-context-display {
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.task-context-label {
+  color: var(--text-dim);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.task-context-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-context-input {
+  width: 100%;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 8px;
+  outline: none;
+  resize: vertical;
+}
+
+.task-context-input::placeholder {
+  color: var(--text-dim);
+}
+
+.task-context-input:focus {
+  box-shadow: 0 0 10px var(--glow-color);
+  border-color: var(--text-highlight);
+}
+
+.task-context-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.task-context-save,
+.task-context-cancel {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 6px 12px;
+  transition: all 0.2s;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-context-save:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+  text-shadow: none;
+}
+
+.task-context-cancel:hover {
+  background-color: #ff3333;
+  border-color: #ff3333;
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px #ff3333;
+  text-shadow: none;
+}
+
 /* Corner Brackets */
 .app::before,
 .app::after {
