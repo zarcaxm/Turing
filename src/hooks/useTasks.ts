@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Task } from '../types/task';
 import { calculateScore } from '../utils/scoring';
 import { loadTasks, saveTasks } from '../utils/storage';
+import { assignTaskNumbers } from '../utils/numbering';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // Automatically assign hierarchical numbers to tasks
+  const numberedTasks = useMemo(() => assignTaskNumbers(tasks), [tasks]);
 
   // Load tasks from localStorage on mount
   useEffect(() => {
@@ -36,6 +40,7 @@ export function useTasks() {
       // Add root level task
       const newTask: Task = {
         id: generateId(),
+        number: '', // Will be assigned by assignTaskNumbers
         title: title.trim(),
         completed: false,
         level: 0,
@@ -52,6 +57,7 @@ export function useTasks() {
           if (task.id === parentId) {
             const newSubtask: Task = {
               id: generateId(),
+              number: '', // Will be assigned by assignTaskNumbers
               title: title.trim(),
               completed: false,
               level: task.level + 1,
@@ -158,7 +164,7 @@ export function useTasks() {
   };
 
   return {
-    tasks,
+    tasks: numberedTasks,
     addTask,
     deleteTask,
     toggleComplete,

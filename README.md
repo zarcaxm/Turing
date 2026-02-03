@@ -6,6 +6,7 @@ An alien-inspired retro terminal task manager with nested task support and a nos
 ## Features
 
 - **Nested Task Management**: Create unlimited hierarchical subtasks with automatic score calculation
+- **Automatic Task Numbering**: Each task gets a hierarchical number (e.g., 1, 1.1, 1.2.1) for easy reference
 - **Retro Terminal UI**: Weyland-Yutani Corporation-themed interface with authentic CRT screen effects
 - **Score System**: Dynamic scoring based on task depth (100 points base, -10 per nesting level)
 - **Local Persistence**: Tasks automatically saved to localStorage
@@ -125,6 +126,7 @@ Turing/
 
 Each task contains:
 - **id**: Unique identifier
+- **number**: Hierarchical task number (e.g., "1", "1.1", "1.2.1")
 - **title**: Task description
 - **completed**: Completion status
 - **level**: Nesting depth (0 = root level)
@@ -132,6 +134,17 @@ Each task contains:
 - **subtasks**: Array of child tasks
 - **createdAt**: Timestamp
 - **expanded**: UI state for expand/collapse
+
+### Task Numbering
+
+Tasks are automatically numbered hierarchically:
+- **Root tasks**: 1, 2, 3, ...
+- **1st level subtasks**: 1.1, 1.2, 1.3, ...
+- **2nd level subtasks**: 1.1.1, 1.1.2, 1.2.1, ...
+- **3rd level subtasks**: 1.1.1.1, 1.1.1.2, ...
+- And so on
+
+Numbers are dynamically recalculated when tasks are added, deleted, or reordered.
 
 ### Scoring
 

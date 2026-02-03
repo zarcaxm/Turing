@@ -50,9 +50,9 @@ export function TaskItem({
           {task.completed ? '✓' : ' '}
         </button>
 
-        {/* Task title */}
+        {/* Task number and title */}
         <span className={`task-title ${task.completed ? 'completed' : ''}`}>
-          {task.title}
+          <span className="task-number">{task.number}.</span> {task.title}
         </span>
 
         {/* Score badge */}
