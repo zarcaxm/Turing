@@ -1,0 +1,293 @@
+/* Alien Terminal Base Styles */
+
+:root {
+  --bg-dark: #0a0a0a;
+  --bg-medium: #1a1a1a;
+  --text-primary: #33ff33;
+  --text-dim: #1a7a1a;
+  --text-highlight: #55ff55;
+  --border-color: #33ff33;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', 'Consolas', monospace;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow: hidden;
+  user-select: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main App Container */
+.app {
+  width: 90%;
+  height: 90%;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 20px rgba(51, 255, 51, 0.5);
+  background-color: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  position: relative;
+}
+
+/* Header */
+.app-header {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-size: 24px;
+  letter-spacing: 4px;
+  text-align: center;
+  text-shadow: 0 0 10px var(--text-primary);
+}
+
+.app-subtitle {
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-dim);
+  margin-top: 5px;
+}
+
+/* Task Stats */
+.task-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-medium);
+}
+
+.stat-item {
+  display: flex;
+  gap: 10px;
+}
+
+.stat-label {
+  color: var(--text-dim);
+}
+
+.stat-value {
+  color: var(--text-primary);
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+/* Task List Container */
+.task-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.tasks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.no-tasks {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 40px;
+  font-size: 18px;
+}
+
+/* Task Input */
+.task-input-form {
+  margin-bottom: 20px;
+}
+
+.task-input {
+  width: 100%;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 16px;
+  padding: 10px;
+  outline: none;
+}
+
+.task-input::placeholder {
+  color: var(--text-dim);
+}
+
+.task-input:focus {
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+  border-color: var(--text-highlight);
+}
+
+/* Task Item */
+.task-item {
+  margin-bottom: 5px;
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: var(--bg-medium);
+  border: 1px solid var(--text-dim);
+  transition: all 0.2s;
+}
+
+.task-content:hover {
+  border-color: var(--border-color);
+  box-shadow: 0 0 5px rgba(51, 255, 51, 0.2);
+}
+
+/* Task Buttons */
+.task-expand-btn,
+.task-checkbox,
+.task-add-btn,
+.task-delete-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 4px 8px;
+  transition: all 0.2s;
+}
+
+.task-expand-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-checkbox {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-checkbox.completed {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+}
+
+.task-expand-btn:hover,
+.task-add-btn:hover,
+.task-delete-btn:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+}
+
+.task-checkbox:hover {
+  border-color: var(--text-highlight);
+  box-shadow: 0 0 5px var(--text-primary);
+}
+
+/* Task Title */
+.task-title {
+  flex: 1;
+  font-size: 16px;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: var(--text-dim);
+}
+
+/* Task Score */
+.task-score {
+  color: var(--text-highlight);
+  font-weight: bold;
+  font-size: 14px;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+/* Delete Button */
+.task-delete-btn {
+  font-size: 20px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-delete-btn:hover {
+  background-color: #ff3333;
+  border-color: #ff3333;
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px #ff3333;
+}
+
+/* Subtask Input */
+.task-subtask-input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* Scrollbar */
+.task-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+  border: 1px solid var(--text-dim);
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-highlight);
+}
+
+/* Corner Brackets */
+.app::before,
+.app::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+}
+
+.app::before {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.app::after {
+  top: 10px;
+  right: 10px;
+  border-left: none;
+  border-bottom: none;
+}

@@ -1,0 +1,203 @@
+/* CRT Monitor Effects */
+
+/* Text Glow Effect */
+.app-title,
+.stat-value,
+.task-score,
+.task-content,
+.task-input {
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
+}
+
+/* Scanlines Overlay */
+.app::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 1000;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+}
+
+/* Screen Flicker */
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  2% {
+    opacity: 0.98;
+  }
+  4% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.99;
+  }
+  70% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.98;
+  }
+  77% {
+    opacity: 0.99;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.app {
+  animation: flicker 5s infinite;
+}
+
+/* Vignette Effect */
+.app::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.3) 70%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  z-index: 999;
+}
+
+/* Screen Curvature */
+#root {
+  perspective: 1000px;
+}
+
+.app {
+  transform: perspective(1000px) rotateX(0deg);
+  border-radius: 8px;
+}
+
+/* Phosphor Glow on Text */
+.task-title,
+.app-title,
+.stat-label,
+.stat-value,
+.task-input {
+  text-shadow:
+    0 0 5px rgba(51, 255, 51, 0.8),
+    0 0 10px rgba(51, 255, 51, 0.5),
+    0 0 15px rgba(51, 255, 51, 0.3);
+}
+
+/* Screen Bloom */
+.app {
+  box-shadow:
+    inset 0 0 50px rgba(51, 255, 51, 0.1),
+    0 0 20px rgba(51, 255, 51, 0.5),
+    0 0 40px rgba(51, 255, 51, 0.3);
+}
+
+/* CRT Refresh Line */
+@keyframes refresh-line {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.app::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(51, 255, 51, 0) 0%,
+    rgba(51, 255, 51, 0.8) 50%,
+    rgba(51, 255, 51, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1001;
+  animation: refresh-line 8s linear infinite;
+  opacity: 0.3;
+}
+
+/* Input Cursor Blink */
+.task-input {
+  caret-color: var(--text-primary);
+}
+
+@keyframes cursor-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Pixel Grid Effect (subtle) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  z-index: 2000;
+}
+
+/* Glow effect on hover */
+.task-content:hover {
+  text-shadow:
+    0 0 10px rgba(51, 255, 51, 0.9),
+    0 0 20px rgba(51, 255, 51, 0.6);
+}
+
+/* Button Glow */
+button:hover {
+  text-shadow:
+    0 0 5px rgba(51, 255, 51, 1),
+    0 0 10px rgba(51, 255, 51, 0.8);
+}
