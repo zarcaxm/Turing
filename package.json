@@ -11,9 +11,18 @@
     "electron:build": "npm run build && electron-builder",
     "electron": "electron ."
   },
-  "keywords": ["electron", "task-manager", "retro", "terminal"],
+  "keywords": [
+    "electron",
+    "task-manager",
+    "retro",
+    "terminal"
+  ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zarcaxm/Turing.git"
+  },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -40,7 +49,9 @@
       "dist/**/*"
     ],
     "win": {
-      "target": ["nsis"]
+      "target": [
+        "nsis"
+      ]
     }
   }
 }
