@@ -1,5 +1,4 @@
-# USCSS TURING Task Manager
-
+# USCSS TURING 
 An alien-inspired retro terminal task manager with nested task support and a nostalgic CRT aesthetic. Built as a desktop application using Electron, React, and TypeScript.
 
 ## Features
