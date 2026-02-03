@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { TaskInput } from './components/TaskInput';
 import { TaskList } from './components/TaskList';
 import './styles/terminal.css';
 import './styles/crt-effects.css';
+
+type Theme = 'dark' | 'light';
 
 function App() {
   const {
@@ -12,6 +15,22 @@ function App() {
     toggleComplete,
     toggleExpand,
   } = useTasks();
+
+  // Theme state management
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = localStorage.getItem('turing_theme');
+    return (savedTheme as Theme) || 'dark';
+  });
+
+  // Apply theme to body element
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('turing_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  };
 
   const handleAddRootTask = (title: string) => {
     addTask(title, null);
@@ -27,6 +46,13 @@ function App() {
       <div className="app-header">
         <h1 className="app-title">USCSS TURING </h1>
         <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V4.2.1</div>
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+        >
+          [{theme === 'dark' ? 'LIGHT' : 'DARK'} MODE]
+        </button>
       </div>
 
       {/* Task Input */}

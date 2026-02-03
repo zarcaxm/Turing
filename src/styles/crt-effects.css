@@ -1,18 +1,18 @@
 /* CRT Monitor Effects */
 
-/* Text Glow Effect */
+/* Text Glow Effect - uses CSS variables for theme support */
 .app-title,
 .stat-value,
 .task-score,
 .task-content,
 .task-input {
-  text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
+  text-shadow: 0 0 5px var(--glow-color);
 }
 
-/* Scanlines Overlay */
-.app::after {
+/* Scanlines Overlay - moved to body to avoid conflict */
+body::after {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -70,23 +70,7 @@
   animation: flicker 5s infinite;
 }
 
-/* Vignette Effect */
-.app::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: radial-gradient(
-    circle at center,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.3) 70%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-  z-index: 999;
-}
+/* Vignette Effect - keeping on .app::before but CRT effects will override corner brackets */
 
 /* Screen Curvature */
 #root {
@@ -98,54 +82,44 @@
   border-radius: 8px;
 }
 
-/* Phosphor Glow on Text */
-.task-title,
-.app-title,
-.stat-label,
-.stat-value,
-.task-input {
+/* Phosphor Glow on Text - reduced for light mode compatibility */
+body[data-theme="dark"] .task-title,
+body[data-theme="dark"] .app-title,
+body[data-theme="dark"] .stat-label,
+body[data-theme="dark"] .stat-value,
+body[data-theme="dark"] .task-input {
   text-shadow:
     0 0 5px rgba(51, 255, 51, 0.8),
     0 0 10px rgba(51, 255, 51, 0.5),
     0 0 15px rgba(51, 255, 51, 0.3);
 }
 
+body[data-theme="light"] .task-title,
+body[data-theme="light"] .app-title,
+body[data-theme="light"] .stat-label,
+body[data-theme="light"] .stat-value,
+body[data-theme="light"] .task-input {
+  text-shadow:
+    0 0 3px rgba(74, 124, 47, 0.4),
+    0 0 6px rgba(74, 124, 47, 0.2);
+}
+
 /* Screen Bloom */
-.app {
+body[data-theme="dark"] .app {
   box-shadow:
     inset 0 0 50px rgba(51, 255, 51, 0.1),
     0 0 20px rgba(51, 255, 51, 0.5),
     0 0 40px rgba(51, 255, 51, 0.3);
 }
 
-/* CRT Refresh Line */
-@keyframes refresh-line {
-  0% {
-    top: 0;
-  }
-  100% {
-    top: 100%;
-  }
+body[data-theme="light"] .app {
+  box-shadow:
+    inset 0 0 30px rgba(74, 124, 47, 0.05),
+    0 0 15px rgba(74, 124, 47, 0.3),
+    0 0 25px rgba(74, 124, 47, 0.2);
 }
 
-.app::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(
-    to bottom,
-    rgba(51, 255, 51, 0) 0%,
-    rgba(51, 255, 51, 0.8) 50%,
-    rgba(51, 255, 51, 0) 100%
-  );
-  pointer-events: none;
-  z-index: 1001;
-  animation: refresh-line 8s linear infinite;
-  opacity: 0.3;
-}
+/* CRT Refresh Line - removed duplicate to simplify and avoid conflicts */
 
 /* Input Cursor Blink */
 .task-input {
@@ -189,15 +163,27 @@ body::before {
 }
 
 /* Glow effect on hover */
-.task-content:hover {
+body[data-theme="dark"] .task-content:hover {
   text-shadow:
     0 0 10px rgba(51, 255, 51, 0.9),
     0 0 20px rgba(51, 255, 51, 0.6);
 }
 
+body[data-theme="light"] .task-content:hover {
+  text-shadow:
+    0 0 5px rgba(74, 124, 47, 0.6),
+    0 0 10px rgba(74, 124, 47, 0.3);
+}
+
 /* Button Glow */
-button:hover {
+body[data-theme="dark"] button:hover {
   text-shadow:
     0 0 5px rgba(51, 255, 51, 1),
     0 0 10px rgba(51, 255, 51, 0.8);
+}
+
+body[data-theme="light"] button:hover {
+  text-shadow:
+    0 0 3px rgba(74, 124, 47, 0.8),
+    0 0 6px rgba(74, 124, 47, 0.4);
 }
