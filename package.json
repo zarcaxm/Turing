@@ -17,7 +17,10 @@
     "retro",
     "terminal"
   ],
-  "author": "",
+  "author": {
+    "name": "zarcaxm",
+    "email": "zarcaxm@users.noreply.github.com"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -58,6 +61,12 @@
       "target": [
         "AppImage",
         "deb"
+      ],
+      "maintainer": "zarcaxm@users.noreply.github.com"
+    },
+    "mac": {
+      "target": [
+        "dmg"
       ]
     }
   }
