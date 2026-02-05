@@ -2,9 +2,7 @@ import { Task } from '../types/task';
 
 const STORAGE_KEY = 'turing_tasks';
 
-/**
- * Save tasks to localStorage
- */
+/// Save tasks to localStorage
 export function saveTasks(tasks: Task[]): void {
   try {
     const json = JSON.stringify(tasks);
@@ -14,10 +12,8 @@ export function saveTasks(tasks: Task[]): void {
   }
 }
 
-/**
- * Load tasks from localStorage
- * Returns empty array if no tasks are stored
- */
+///Load tasks from localStorage
+///Returns empty array if no tasks are stored
 export function loadTasks(): Task[] {
   try {
     const json = localStorage.getItem(STORAGE_KEY);
@@ -31,9 +27,7 @@ export function loadTasks(): Task[] {
   }
 }
 
-/**
- * Clear all tasks from storage
- */
+/// Clear all tasks from storage
 export function clearTasks(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
