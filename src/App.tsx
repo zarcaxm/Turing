@@ -46,7 +46,7 @@ function App() {
       {/* Header */}
       <div className="app-header">
         <h1 className="app-title">USCSS TURING </h1>
-        <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V4.2.1</div>
+        <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V1.1.4</div>
         <button
           className="theme-toggle"
           onClick={toggleTheme}
