@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
 let mainWindow;
@@ -31,7 +32,47 @@ function createWindow() {
   });
 }
 
-app.on('ready', createWindow);
+// Auto-updater configuration
+autoUpdater.autoDownload = false;
+
+autoUpdater.on('update-available', (info) => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Available',
+    message: `Version ${info.version} is available. Download now?`,
+    buttons: ['Yes', 'Later']
+  }).then((result) => {
+    if (result.response === 0) {
+      autoUpdater.downloadUpdate();
+    }
+  });
+});
+
+autoUpdater.on('update-downloaded', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Ready',
+    message: 'Update downloaded. The app will restart to install.',
+    buttons: ['Restart Now', 'Later']
+  }).then((result) => {
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
+
+autoUpdater.on('error', (err) => {
+  console.log('Auto-updater error:', err);
+});
+
+app.on('ready', () => {
+  createWindow();
+
+  // Check for updates in production
+  if (process.env.NODE_ENV !== 'development') {
+    autoUpdater.checkForUpdates();
+  }
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

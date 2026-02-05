@@ -18,13 +18,11 @@ body::after {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 2px
-  );
+  background: repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px);
   z-index: 1000;
   animation: scanline 8s linear infinite;
 }
@@ -33,6 +31,7 @@ body::after {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(10px);
   }
@@ -43,24 +42,31 @@ body::after {
   0% {
     opacity: 1;
   }
+
   2% {
     opacity: 0.98;
   }
+
   4% {
     opacity: 1;
   }
+
   8% {
     opacity: 0.99;
   }
+
   70% {
     opacity: 1;
   }
+
   72% {
     opacity: 0.98;
   }
+
   77% {
     opacity: 0.99;
   }
+
   100% {
     opacity: 1;
   }
@@ -108,11 +114,12 @@ body[data-theme="light"] .task-input {
 body[data-theme="dark"] .app {
   box-shadow:
     inset 0 0 50px rgba(51, 255, 51, 0.1),
-    0 0 20px rgba(51, 255, 51, 0.5),
-    0 0 40px rgba(51, 255, 51, 0.3);
+    0 0 20px #dff70a,
+    0 0 40px #dff70a;
 }
 
-body[data-theme="light"] .app {
+
+-- body[data-theme="light"] .app {
   box-shadow:
     inset 0 0 30px rgba(74, 124, 47, 0.05),
     0 0 15px rgba(74, 124, 47, 0.3),
@@ -127,10 +134,14 @@ body[data-theme="light"] .app {
 }
 
 @keyframes cursor-blink {
-  0%, 49% {
+
+  0%,
+  49% {
     opacity: 1;
   }
-  50%, 100% {
+
+  50%,
+  100% {
     opacity: 0;
   }
 }
@@ -145,20 +156,16 @@ body::before {
   height: 100%;
   pointer-events: none;
   background-image:
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       rgba(0, 0, 0, 0.05),
       rgba(0, 0, 0, 0.05) 1px,
       transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      90deg,
+      transparent 2px),
+    repeating-linear-gradient(90deg,
       rgba(0, 0, 0, 0.05),
       rgba(0, 0, 0, 0.05) 1px,
       transparent 1px,
-      transparent 2px
-    );
+      transparent 2px);
   z-index: 2000;
 }
 
@@ -166,7 +173,7 @@ body::before {
 body[data-theme="dark"] .task-content:hover {
   text-shadow:
     0 0 10px rgba(51, 255, 51, 0.9),
-    0 0 20px rgba(51, 255, 51, 0.6);
+    0 0 20px rgba(202, 223, 18, 0.6);
 }
 
 body[data-theme="light"] .task-content:hover {

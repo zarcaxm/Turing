@@ -76,7 +76,7 @@ body {
 .app-subtitle {
   font-size: 12px;
   text-align: center;
-  color: var(--text-dim);
+  color: #dff70a;
   margin-top: 5px;
 }
 

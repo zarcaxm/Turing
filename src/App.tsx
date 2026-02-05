@@ -43,10 +43,9 @@ function App() {
 
   return (
     <div className="app">
-      {/* Header */}
       <div className="app-header">
         <h1 className="app-title">USCSS TURING </h1>
-        <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V1.1.4</div>
+        <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
         <button
           className="theme-toggle"
           onClick={toggleTheme}
@@ -56,10 +55,8 @@ function App() {
         </button>
       </div>
 
-      {/* Task Input */}
       <TaskInput onAddTask={handleAddRootTask} autoFocus={true} />
 
-      {/* Task List */}
       <TaskList
         tasks={tasks}
         onToggleComplete={toggleComplete}
