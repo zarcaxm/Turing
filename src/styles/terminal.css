@@ -73,10 +73,17 @@ body {
   text-shadow: 0 0 10px var(--text-primary);
 }
 
-.app-subtitle {
+body[data-theme="light"] .app-subtitle {
   font-size: 12px;
   text-align: center;
-  color: #dff70a;
+  color: #f7cc0a;
+  margin-top: 5px;
+}
+
+body[data-theme="dark"] .app-subtitle {
+  font-size: 12px;
+  text-align: center;
+  color: #f7cc0a;
   margin-top: 5px;
 }
 
