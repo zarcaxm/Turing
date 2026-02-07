@@ -42,29 +42,63 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <div className="app-header">
-        <h1 className="app-title">USCSS TURING </h1>
-        <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
-        <button
-          className="theme-toggle"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-        >
-          [{theme === 'dark' ? 'LIGHT' : 'DARK'} MODE]
-        </button>
+    <div className="monitor-frame">
+      <div className="monitor-bezel">
+        <div className="screen-recess">
+          <div className="app">
+            <div className="app-header">
+              <h1 className="app-title">USCSS TURING </h1>
+              <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
+              <button
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+              >
+                [{theme === 'dark' ? 'LIGHT' : 'DARK'} MODE]
+              </button>
+            </div>
+
+            <TaskInput onAddTask={handleAddRootTask} autoFocus={true} />
+
+            <TaskList
+              tasks={tasks}
+              onToggleComplete={toggleComplete}
+              onDelete={deleteTask}
+              onAddSubtask={handleAddSubtask}
+              onToggleExpand={toggleExpand}
+              onUpdateTask={updateTask}
+            />
+          </div>
+        </div>
+
+        <div className="bezel-bottom">
+          <div className="bezel-vent-group">
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+          </div>
+
+          <div className="monitor-controls">
+            <div className="power-led"></div>
+            {/* <div className="monitor-btns">
+              <div className="monitor-btn"></div>
+              <div className="monitor-btn"></div>
+              <div className="monitor-btn"></div>
+            </div> */}
+            <span className="monitor-label">WEYLAND-YUTANI</span>
+          </div>
+
+          <div className="bezel-vent-group">
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+            <div className="bezel-vent"></div>
+          </div>
+        </div>
       </div>
-
-      <TaskInput onAddTask={handleAddRootTask} autoFocus={true} />
-
-      <TaskList
-        tasks={tasks}
-        onToggleComplete={toggleComplete}
-        onDelete={deleteTask}
-        onAddSubtask={handleAddSubtask}
-        onToggleExpand={toggleExpand}
-        onUpdateTask={updateTask}
-      />
     </div>
   );
 }

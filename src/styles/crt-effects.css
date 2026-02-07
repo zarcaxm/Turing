@@ -76,16 +76,36 @@ body::after {
   animation: flicker 5s infinite;
 }
 
-/* Vignette Effect - keeping on .app::before but CRT effects will override corner brackets */
 
 /* Screen Curvature */
 #root {
   perspective: 1000px;
+  position: relative;
 }
 
 .app {
-  transform: perspective(1000px) rotateX(0deg);
-  border-radius: 8px;
+  transform: perspective(1000px) rotateX(0.5deg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+/* Glass Reflection - light catching the curved screen */
+.screen-recess::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.03) 25%,
+      transparent 50%,
+      transparent 100%);
+  pointer-events: none;
+  z-index: 950;
 }
 
 /* Phosphor Glow on Text - reduced for light mode compatibility */
@@ -113,17 +133,19 @@ body[data-theme="light"] .task-input {
 /* Screen Bloom */
 body[data-theme="dark"] .app {
   box-shadow:
+    /* Inner screen glow */
     inset 0 0 50px rgba(51, 255, 51, 0.1),
-    0 0 20px #dff70a,
-    0 0 40px #dff70a;
+    /* Outer glow bleeding onto bezel */
+    0 0 20px rgba(51, 255, 51, 0.15),
+    0 0 40px rgba(51, 255, 51, 0.05);
 }
 
-
--- body[data-theme="light"] .app {
+body[data-theme="light"] .app {
   box-shadow:
+    /* Inner screen glow */
     inset 0 0 30px rgba(74, 124, 47, 0.05),
-    0 0 15px rgba(74, 124, 47, 0.3),
-    0 0 25px rgba(74, 124, 47, 0.2);
+    /* Outer glow bleeding onto bezel */
+    0 0 15px rgba(74, 124, 47, 0.1);
 }
 
 /* CRT Refresh Line - removed duplicate to simplify and avoid conflicts */
