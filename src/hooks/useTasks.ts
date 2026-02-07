@@ -23,16 +23,14 @@ export function useTasks() {
     }
   }, [tasks]);
 
-  /**
-   * Generate a unique ID for a task
-   */
+
+  //Generate a unique ID for a task
   const generateId = (): string => {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  /**
-   * Add a new task (root level or as subtask)
-   */
+
+  //Add a new task (root level or as subtask)
   const addTask = (title: string, parentId: string | null = null, context?: string) => {
     if (!title.trim()) return;
 
@@ -123,9 +121,8 @@ export function useTasks() {
     setTasks(toggleRecursive(tasks));
   };
 
-  /**
-   * Toggle task expand/collapse state
-   */
+
+  //Toggle task expand/collapse state
   const toggleExpand = (taskId: string) => {
     const toggleRecursive = (taskList: Task[]): Task[] => {
       return taskList.map(task => {
@@ -144,9 +141,8 @@ export function useTasks() {
     setTasks(toggleRecursive(tasks));
   };
 
-  /**
-   * Update a task's properties
-   */
+
+  //Update a task's properties
   const updateTask = (taskId: string, updates: Partial<Task>) => {
     const updateRecursive = (taskList: Task[]): Task[] => {
       return taskList.map(task => {

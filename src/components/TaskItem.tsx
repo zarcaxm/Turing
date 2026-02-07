@@ -73,13 +73,19 @@ export function TaskItem({
         <span className="task-score">[{task.score} PTS]</span>
 
         {/* Add subtask button */}
-        <button
-          className="task-add-btn"
-          onClick={() => setShowInput(!showInput)}
-          aria-label="Add subtask"
-        >
-          +
-        </button>
+        {!task.completed &&
+          (
+            <button
+              className="task-add-btn"
+              disabled={task.completed}
+              onClick={() => setShowInput(!showInput)}
+              aria-label="Add subtask"
+            >
+              +
+            </button>
+          )
+        }
+
 
         {/* Delete button */}
         <button
