@@ -53,7 +53,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: release/*.exe
+          path: |
+            release/*.exe
+            release/*.exe.blockmap
+            release/latest.yml
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
@@ -62,6 +65,7 @@ jobs:
           path: |
             release/*.AppImage
             release/*.deb
+            release/latest-linux.yml
 
   build-macos:
     runs-on: macos-latest
@@ -95,7 +99,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-build
-          path: release/*.dmg
+          path: |
+            release/*.dmg
+            release/*.dmg.blockmap
+            release/latest-mac.yml
 
   release:
     needs: [build-linux-windows, build-macos]
