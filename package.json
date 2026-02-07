@@ -61,7 +61,8 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "artifactName": "Turing-Task-Manager-Setup-${version}.${ext}"
     },
     "linux": {
       "target": [
