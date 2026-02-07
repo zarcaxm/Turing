@@ -36,20 +36,26 @@ function createWindow() {
 autoUpdater.autoDownload = false;
 
 autoUpdater.on('update-available', (info) => {
-  dialog.showMessageBox({
+  dialog.showMessageBox(mainWindow, {
     type: 'info',
     title: 'Update Available',
     message: `Version ${info.version} is available. Download now?`,
     buttons: ['Yes', 'Later']
   }).then((result) => {
     if (result.response === 0) {
+      mainWindow?.setProgressBar(0);
       autoUpdater.downloadUpdate();
     }
   });
 });
 
+autoUpdater.on('download-progress', (progress) => {
+  mainWindow?.setProgressBar(progress.percent / 100);
+});
+
 autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox({
+  mainWindow?.setProgressBar(-1);
+  dialog.showMessageBox(mainWindow, {
     type: 'info',
     title: 'Update Ready',
     message: 'Update downloaded. The app will restart to install.',
@@ -62,7 +68,13 @@ autoUpdater.on('update-downloaded', () => {
 });
 
 autoUpdater.on('error', (err) => {
-  console.log('Auto-updater error:', err);
+  mainWindow?.setProgressBar(-1);
+  dialog.showMessageBox(mainWindow, {
+    type: 'error',
+    title: 'Update Error',
+    message: 'Failed to update the application.',
+    detail: err?.message || String(err)
+  });
 });
 
 app.on('ready', () => {
