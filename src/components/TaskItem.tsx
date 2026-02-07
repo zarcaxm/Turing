@@ -20,6 +20,7 @@ export function TaskItem({
   onUpdateTask
 }: TaskItemProps) {
   const [showInput, setShowInput] = useState(false);
+  const [showContext, setShowContext] = useState(true);
   const [editingContext, setEditingContext] = useState(false);
   const [contextValue, setContextValue] = useState(task.context || '');
 
@@ -64,8 +65,12 @@ export function TaskItem({
           {task.completed ? '✓' : ' '}
         </button>
 
-        {/* Task number and title */}
-        <span className={`task-title ${task.completed ? 'completed' : ''}`}>
+        {/* Task number and title - click to toggle context */}
+        <span
+          className={`task-title ${task.completed ? 'completed' : ''}`}
+          onClick={() => task.context && setShowContext(!showContext)}
+          style={{ cursor: task.context ? 'pointer' : 'default' }}
+        >
           <span className="task-number">{task.number}.</span> {task.title}
         </span>
 
@@ -108,7 +113,7 @@ export function TaskItem({
       </div>
 
       {/* Context display/edit */}
-      {(task.context || editingContext) && (
+      {(editingContext || (task.context && showContext)) && (
         <div className="task-context" style={{ marginLeft: `${task.level * 20 + 40}px` }}>
           {editingContext ? (
             <div className="task-context-edit">
