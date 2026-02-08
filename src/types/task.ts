@@ -7,6 +7,7 @@ export interface Task {
   score: number;           // Calculated score (100 - level * 10)
   subtasks: Task[];        // Nested child tasks
   createdAt: number;       // Timestamp
+  completedAt?: number;    // Timestamp when task was completed
   expanded?: boolean;      // UI state for expand/collapse
   context?: string;        // Additional details/context about the task
 }

@@ -1,52 +1,36 @@
-# USCSS TURING 
+# USCSS TURING
 An alien-inspired retro terminal task manager with nested task support and a nostalgic CRT aesthetic. Built as a desktop application using Electron, React, and TypeScript.
 
 <img width="1570" height="1130" alt="image" src="https://github.com/user-attachments/assets/9d0f612c-6b37-448f-9292-6941ce2a0b11" />
 
-## Features
-
-- **Nested Task Management**: Create unlimited hierarchical subtasks with automatic score calculation
-- **Automatic Task Numbering**: Each task gets a hierarchical number (e.g., 1, 1.1, 1.2.1) for easy reference
-- **Retro Terminal UI**: Weyland-Yutani Corporation-themed interface with authentic CRT screen effects
-- **Score System**: Dynamic scoring based on task depth (100 points base, -10 per nesting level)
-- **Local Persistence**: Tasks automatically saved to localStorage
-- **Expand/Collapse**: Toggle visibility of nested subtasks for better organization
-- **Desktop Application**: Runs as a native application via Electron
 
 ## Tech Stack
 
 - **Frontend**: React 18 + TypeScript
 - **Build Tool**: Vite
 - **Desktop Framework**: Electron
+- **Database**: SQLite (better-sqlite3) via IPC
 - **Styling**: Custom CSS with retro terminal effects
 - **State Management**: React Hooks
 
 ## Prerequisites
 
-- Node.js (v16 or higher recommended)
-- npm or yarn
+- Node.js (v18 or higher recommended)
+- npm
 
 ## Installation
 
 Clone the repository and install dependencies:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/zarcaxm/Turing.git
 cd Turing
 npm install
 ```
 
+The `postinstall` script will automatically rebuild the native SQLite module for Electron.
+
 ## Development
-
-### Run as Web Application
-
-Start the Vite development server:
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:5173`
 
 ### Run as Electron Application
 
@@ -66,6 +50,14 @@ If the dev server is already running:
 npm run electron
 ```
 
+### Rebuild Native Modules
+
+If you encounter issues with `better-sqlite3` after an Electron update:
+
+```bash
+npm run rebuild
+```
+
 ## Building
 
 ### Build Web Version
@@ -74,12 +66,6 @@ Compile TypeScript and build for production:
 
 ```bash
 npm run build
-```
-
-Preview the production build:
-
-```bash
-npm run preview
 ```
 
 ### Build Electron Application
@@ -92,59 +78,26 @@ npm run electron:build
 
 The built application will be in the `release` directory.
 
-## Project Structure
+
+## Architecture
+
+The app uses Electron's IPC (Inter-Process Communication) to bridge the React frontend with SQLite:
 
 ```
-Turing/
-├── src/
-│   ├── components/
-│   │   ├── TaskInput.tsx      # Input component for new tasks
-│   │   ├── TaskList.tsx       # List container for tasks
-│   │   └── TaskItem.tsx       # Individual task component with subtasks
-│   ├── hooks/
-│   │   └── useTasks.ts        # Custom hook for task management logic
-│   ├── styles/
-│   │   ├── terminal.css       # Retro terminal styling
-│   │   └── crt-effects.css    # CRT screen effects
-│   ├── types/
-│   │   └── task.ts            # TypeScript interfaces
-│   ├── utils/
-│   │   ├── scoring.ts         # Score calculation utilities
-│   │   └── storage.ts         # localStorage utilities
-│   ├── App.tsx                # Main application component
-│   └── index.tsx              # Application entry point
-├── electron/                  # Electron main process files
-├── public/                    # Static assets
-├── vite.config.ts             # Vite configuration
-├── tsconfig.json              # TypeScript configuration
-└── package.json               # Project dependencies and scripts
+Renderer (React)          Preload (Bridge)         Main (Node.js)
+────────────────          ────────────────         ───────────────
+useTasks hook  ──►  window.electron.getTasks()  ──►  database.getAllTasks()
+     │                                                      │
+     ◄──────────────── returns Task[] ──────────────────────┘
 ```
+
+- **Main process** (`electron/`) runs Node.js with access to SQLite
+- **Renderer process** (`src/`) runs the React UI in a browser context
+- **Preload script** securely bridges the two via `contextBridge`
+
+The database is stored at `%APPDATA%/turing-task-manager/turing-tasks.db` (Windows).
 
 ## Task System
-
-### Task Properties
-
-Each task contains:
-- **id**: Unique identifier
-- **number**: Hierarchical task number (e.g., "1", "1.1", "1.2.1")
-- **title**: Task description
-- **completed**: Completion status
-- **level**: Nesting depth (0 = root level)
-- **score**: Auto-calculated based on level (100 - level × 10)
-- **subtasks**: Array of child tasks
-- **createdAt**: Timestamp
-- **expanded**: UI state for expand/collapse
-
-### Task Numbering
-
-Tasks are automatically numbered hierarchically:
-- **Root tasks**: 1, 2, 3, ...
-- **1st level subtasks**: 1.1, 1.2, 1.3, ...
-- **2nd level subtasks**: 1.1.1, 1.1.2, 1.2.1, ...
-- **3rd level subtasks**: 1.1.1.1, 1.1.1.2, ...
-- And so on
-
-Numbers are dynamically recalculated when tasks are added, deleted, or reordered.
 
 ### Scoring
 
@@ -156,19 +109,6 @@ Numbers are dynamically recalculated when tasks are added, deleted, or reordered
 
 Only incomplete tasks contribute to the total score.
 
-## Usage
-
-1. **Add Root Task**: Type in the main input field and press Enter
-2. **Add Subtask**: Click the "+ sub" button on any task
-3. **Complete Task**: Click the checkbox next to the task title
-4. **Delete Task**: Click the "×" button (deletes task and all subtasks)
-5. **Expand/Collapse**: Click the ">" arrow to show/hide subtasks
-
-## Keyboard Shortcuts
-
-- `Enter`: Submit new task
-- `Escape`: Clear input field (when focused)
-
 ## Theme
 
 The UI is inspired by the computer terminals from the *Alien* franchise, specifically the USCSS Nostromo's systems operated by the Weyland-Yutani Corporation. The retro aesthetic includes:
@@ -177,7 +117,7 @@ The UI is inspired by the computer terminals from the *Alien* franchise, specifi
 - Green phosphor CRT glow
 - Scanline effects
 - Terminal-style UI elements
-- Classic command-line appearance
+- Dark/Light mode toggle
 
 ## License
 

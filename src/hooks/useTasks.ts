@@ -1,168 +1,66 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task } from '../types/task';
-import { calculateScore } from '../utils/scoring';
-import { loadTasks, saveTasks } from '../utils/storage';
 import { assignTaskNumbers } from '../utils/numbering';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Automatically assign hierarchical numbers to tasks
   const numberedTasks = useMemo(() => assignTaskNumbers(tasks), [tasks]);
 
-  // Load tasks from localStorage on mount
+  // Load tasks from SQLite on mount, migrate localStorage data if present
   useEffect(() => {
-    const loadedTasks = loadTasks();
-    setTasks(loadedTasks);
+    async function init() {
+      try {
+        const legacyData = localStorage.getItem('turing_tasks');
+        if (legacyData) {
+          const legacyTasks = JSON.parse(legacyData) as Task[];
+          if (legacyTasks.length > 0) {
+            await window.electron.importFromLocalStorage({ tasks: legacyTasks });
+          }
+          localStorage.removeItem('turing_tasks');
+        }
+
+        const loadedTasks = await window.electron.getTasks();
+        setTasks(loadedTasks);
+      } catch (error) {
+        console.error('Failed to load tasks:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
   }, []);
 
-  // Save tasks to localStorage whenever they change
-  useEffect(() => {
-    if (tasks.length > 0 || localStorage.getItem('turing_tasks')) {
-      saveTasks(tasks);
-    }
-  }, [tasks]);
-
-
-  //Generate a unique ID for a task
-  const generateId = (): string => {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  };
-
-
-  //Add a new task (root level or as subtask)
-  const addTask = (title: string, parentId: string | null = null, context?: string) => {
+  const addTask = useCallback(async (title: string, parentId: string | null = null, context?: string) => {
     if (!title.trim()) return;
+    const updatedTasks = await window.electron.addTask({ title, parentId, context });
+    setTasks(updatedTasks);
+  }, []);
 
-    if (parentId === null) {
-      // Add root level task
-      const newTask: Task = {
-        id: generateId(),
-        number: '', // Will be assigned by assignTaskNumbers
-        title: title.trim(),
-        completed: false,
-        level: 0,
-        score: calculateScore(0),
-        subtasks: [],
-        createdAt: Date.now(),
-        expanded: true,
-        ...(context && { context: context.trim() }),
-      };
-      setTasks([...tasks, newTask]);
-    } else {
-      // Add subtask to parent
-      const addSubtaskRecursive = (taskList: Task[]): Task[] => {
-        return taskList.map(task => {
-          if (task.id === parentId) {
-            const newSubtask: Task = {
-              id: generateId(),
-              number: '', // Will be assigned by assignTaskNumbers
-              title: title.trim(),
-              completed: false,
-              level: task.level + 1,
-              score: calculateScore(task.level + 1),
-              subtasks: [],
-              createdAt: Date.now(),
-              expanded: true,
-              ...(context && { context: context.trim() }),
-            };
-            return {
-              ...task,
-              subtasks: [...task.subtasks, newSubtask],
-              expanded: true, // Auto-expand when adding subtask
-            };
-          }
-          if (task.subtasks.length > 0) {
-            return {
-              ...task,
-              subtasks: addSubtaskRecursive(task.subtasks),
-            };
-          }
-          return task;
-        });
-      };
-      setTasks(addSubtaskRecursive(tasks));
-    }
-  };
+  const deleteTask = useCallback(async (taskId: string) => {
+    const updatedTasks = await window.electron.deleteTask({ taskId });
+    setTasks(updatedTasks);
+  }, []);
 
-  /**
-   * Delete a task and all its subtasks
-   */
-  const deleteTask = (taskId: string) => {
-    const deleteRecursive = (taskList: Task[]): Task[] => {
-      return taskList
-        .filter(task => task.id !== taskId)
-        .map(task => ({
-          ...task,
-          subtasks: deleteRecursive(task.subtasks),
-        }));
-    };
-    setTasks(deleteRecursive(tasks));
-  };
+  const toggleComplete = useCallback(async (taskId: string) => {
+    const updatedTasks = await window.electron.toggleComplete({ taskId });
+    setTasks(updatedTasks);
+  }, []);
 
-  /**
-   * Toggle task completion status
-   */
-  const toggleComplete = (taskId: string) => {
-    const toggleRecursive = (taskList: Task[]): Task[] => {
-      return taskList.map(task => {
-        if (task.id === taskId) {
-          return { ...task, completed: !task.completed };
-        }
-        if (task.subtasks.length > 0) {
-          return {
-            ...task,
-            subtasks: toggleRecursive(task.subtasks),
-          };
-        }
-        return task;
-      });
-    };
-    setTasks(toggleRecursive(tasks));
-  };
+  const toggleExpand = useCallback(async (taskId: string) => {
+    const updatedTasks = await window.electron.toggleExpand({ taskId });
+    setTasks(updatedTasks);
+  }, []);
 
-
-  //Toggle task expand/collapse state
-  const toggleExpand = (taskId: string) => {
-    const toggleRecursive = (taskList: Task[]): Task[] => {
-      return taskList.map(task => {
-        if (task.id === taskId) {
-          return { ...task, expanded: !task.expanded };
-        }
-        if (task.subtasks.length > 0) {
-          return {
-            ...task,
-            subtasks: toggleRecursive(task.subtasks),
-          };
-        }
-        return task;
-      });
-    };
-    setTasks(toggleRecursive(tasks));
-  };
-
-
-  //Update a task's properties
-  const updateTask = (taskId: string, updates: Partial<Task>) => {
-    const updateRecursive = (taskList: Task[]): Task[] => {
-      return taskList.map(task => {
-        if (task.id === taskId) {
-          return { ...task, ...updates };
-        }
-        if (task.subtasks.length > 0) {
-          return {
-            ...task,
-            subtasks: updateRecursive(task.subtasks),
-          };
-        }
-        return task;
-      });
-    };
-    setTasks(updateRecursive(tasks));
-  };
+  const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
+    const updatedTasks = await window.electron.updateTask({ taskId, updates });
+    setTasks(updatedTasks);
+  }, []);
 
   return {
     tasks: numberedTasks,
+    loading,
     addTask,
     deleteTask,
     toggleComplete,

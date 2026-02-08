@@ -1,6 +1,7 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const database = require('./database');
 
 let mainWindow;
 
@@ -78,6 +79,8 @@ autoUpdater.on('error', (err) => {
 });
 
 app.on('ready', () => {
+  database.initDatabase();
+  registerIpcHandlers();
   createWindow();
 
   // Check for updates in production
@@ -85,6 +88,22 @@ app.on('ready', () => {
     autoUpdater.checkForUpdates();
   }
 });
+
+app.on('before-quit', () => {
+  database.closeDatabase();
+});
+
+function registerIpcHandlers() {
+  ipcMain.handle('db:getTasks', () => database.getAllTasks());
+  ipcMain.handle('db:addTask', (_, args) => database.addTask(args));
+  ipcMain.handle('db:deleteTask', (_, args) => database.deleteTask(args.taskId));
+  ipcMain.handle('db:toggleComplete', (_, args) => database.toggleComplete(args.taskId));
+  ipcMain.handle('db:toggleExpand', (_, args) => database.toggleExpand(args.taskId));
+  ipcMain.handle('db:updateTask', (_, args) => database.updateTask(args.taskId, args.updates));
+  ipcMain.handle('db:importFromLocalStorage', (_, args) => database.importFromLocalStorage(args.tasks));
+  ipcMain.handle('db:getTasksByDateRange', (_, args) => database.getTasksByDateRange(args.startDate, args.endDate));
+  ipcMain.handle('db:getDailyScores', (_, args) => database.getDailyScores(args.startDate, args.endDate));
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
