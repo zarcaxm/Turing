@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
+import { Task } from '../../types/task';
 import { TaskItem } from './TaskItem';
-import { calculateTotalScore, countTasks, countCompletedTasks } from '../utils/scoring';
+import { calculateTotalScore, countTasks, countCompletedTasks } from '../../utils/scoring';
 
 interface TaskListProps {
   tasks: Task[];
@@ -42,7 +42,7 @@ export function TaskList({
         {tasks.length === 0 ? (
           <div className="no-tasks">NO ACTIVE TASKS</div>
         ) : (
-          tasks.map(task => (
+          tasks.filter(task => !task.completed).map(task => (
             <TaskItem
               key={task.id}
               task={task}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Task } from '../types/task';
+import { Task } from '../../types/task';
 import { TaskInput } from './TaskInput';
 
 interface TaskItemProps {
@@ -166,9 +166,9 @@ export function TaskItem({
           />
         </div>
       )}
-
-      {/* Recursively render subtasks */}
-      {isExpanded && hasSubtasks && (
+      {/* 
+      Makes parent task dissapear when checked  */}
+      {isExpanded && hasSubtasks && !task.completed && (
         <div className="task-subtasks">
           {task.subtasks.map(subtask => (
             <TaskItem
