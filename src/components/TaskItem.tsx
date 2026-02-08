@@ -22,6 +22,7 @@ export function TaskItem({
   const [showInput, setShowInput] = useState(false);
   const [showContext, setShowContext] = useState(true);
   const [editingContext, setEditingContext] = useState(false);
+  const [titleValue, setTitleValue] = useState(task.title);
   const [contextValue, setContextValue] = useState(task.context || '');
 
   const handleAddSubtask = (title: string, context?: string) => {
@@ -29,12 +30,16 @@ export function TaskItem({
     setShowInput(false);
   };
 
-  const handleSaveContext = () => {
-    onUpdateTask(task.id, { context: contextValue.trim() || undefined });
+  const handleSaveEdit = () => {
+    onUpdateTask(task.id, {
+      title: titleValue.trim() || task.title,
+      context: contextValue.trim() || undefined
+    });
     setEditingContext(false);
   };
 
-  const handleCancelContext = () => {
+  const handleCancelEdit = () => {
+    setTitleValue(task.title);
     setContextValue(task.context || '');
     setEditingContext(false);
   };
@@ -62,7 +67,7 @@ export function TaskItem({
           onClick={() => onToggleComplete(task.id)}
           aria-label="Toggle completion"
         >
-          {task.completed ? '✓' : ' '}
+          {task.completed ? ' ' : ' '}
         </button>
 
         {/* Task number and title - click to toggle context */}
@@ -117,19 +122,26 @@ export function TaskItem({
         <div className="task-context" style={{ marginLeft: `${task.level * 20 + 40}px` }}>
           {editingContext ? (
             <div className="task-context-edit">
+              <input
+                className="task-title-input"
+                type="text"
+                value={titleValue}
+                onChange={(e) => setTitleValue(e.target.value)}
+                placeholder="> TASK TITLE_"
+                autoFocus
+              />
               <textarea
                 className="task-context-input"
                 value={contextValue}
                 onChange={(e) => setContextValue(e.target.value)}
                 placeholder="> CONTEXT/DETAILS_"
-                autoFocus
                 rows={3}
               />
               <div className="task-context-actions">
-                <button onClick={handleSaveContext} className="task-context-save">
+                <button onClick={handleSaveEdit} className="task-context-save">
                   [SAVE]
                 </button>
-                <button onClick={handleCancelContext} className="task-context-cancel">
+                <button onClick={handleCancelEdit} className="task-context-cancel">
                   [CANCEL]
                 </button>
               </div>

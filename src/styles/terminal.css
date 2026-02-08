@@ -512,6 +512,26 @@ body[data-theme="dark"] .app-subtitle {
   gap: 10px;
 }
 
+.task-title-input {
+  width: 100%;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 8px;
+  outline: none;
+}
+
+.task-title-input::placeholder {
+  color: var(--text-dim);
+}
+
+.task-title-input:focus {
+  box-shadow: 0 0 10px var(--glow-color);
+  border-color: var(--text-highlight);
+}
+
 .task-context-input {
   width: 100%;
   background-color: var(--bg-dark);
