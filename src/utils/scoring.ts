@@ -32,13 +32,14 @@ export function calculateTotalScore(tasks: Task[]): number {
 }
 
 /**
- * Count total number of tasks (including subtasks)
+ * Count total number of visible tasks (including subtasks)
+ * Completed tasks' children are hidden, so don't recurse into them
  */
 export function countTasks(tasks: Task[]): number {
   let count = tasks.length;
 
   for (const task of tasks) {
-    if (task.subtasks.length > 0) {
+    if (!task.completed && task.subtasks.length > 0) {
       count += countTasks(task.subtasks);
     }
   }
@@ -47,7 +48,8 @@ export function countTasks(tasks: Task[]): number {
 }
 
 /**
- * Count completed tasks (including subtasks)
+ * Count completed tasks among visible ones
+ * Only recurse into non-completed tasks (completed tasks hide their children)
  */
 export function countCompletedTasks(tasks: Task[]): number {
   let count = 0;
@@ -55,9 +57,7 @@ export function countCompletedTasks(tasks: Task[]): number {
   for (const task of tasks) {
     if (task.completed) {
       count++;
-    }
-
-    if (task.subtasks.length > 0) {
+    } else if (task.subtasks.length > 0) {
       count += countCompletedTasks(task.subtasks);
     }
   }

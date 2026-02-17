@@ -19,9 +19,10 @@ export function TaskList({
   onToggleExpand,
   onUpdateTask
 }: TaskListProps) {
+  const activeTasks = tasks.filter(task => !task.completed);
   const totalScore = calculateTotalScore(tasks);
-  const totalTaskCount = countTasks(tasks);
-  const completedTaskCount = countCompletedTasks(tasks);
+  const totalTaskCount = countTasks(activeTasks);
+  const completedTaskCount = countCompletedTasks(activeTasks);
 
   return (
     <div className="task-list">
