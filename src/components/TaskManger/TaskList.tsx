@@ -1,6 +1,6 @@
 import { Task } from '../../types/task';
 import { TaskItem } from './TaskItem';
-import { calculateTotalScore, countTasks, countCompletedTasks } from '../../utils/scoring';
+import { calculateTotalScore } from '../../utils/scoring';
 
 interface TaskListProps {
   tasks: Task[];
@@ -19,26 +19,17 @@ export function TaskList({
   onToggleExpand,
   onUpdateTask
 }: TaskListProps) {
-  const activeTasks = tasks.filter(task => !task.completed);
   const totalScore = calculateTotalScore(tasks);
-  const totalTaskCount = countTasks(activeTasks);
-  const completedTaskCount = countCompletedTasks(activeTasks);
 
   return (
     <div className="task-list">
-      {/* Stats header */}
       <div className="task-stats">
         <div className="stat-item">
           <span className="stat-label">TOTAL SCORE:</span>
           <span className="stat-value">{totalScore} PTS</span>
         </div>
-        <div className="stat-item">
-          <span className="stat-label">TASKS:</span>
-          <span className="stat-value">{completedTaskCount}/{totalTaskCount}</span>
-        </div>
       </div>
 
-      {/* Task list */}
       <div className="tasks-container">
         {tasks.length === 0 ? (
           <div className="no-tasks">NO ACTIVE TASKS</div>
