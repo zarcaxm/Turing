@@ -1,7 +1,8 @@
 import { useTasks } from "@/hooks/useTasks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TaskInput } from "../TaskManger/TaskInput";
 import { TaskList } from "../TaskManger/TaskList";
+import { calculateCompletedScoreForRange } from "@/utils/scoring";
 
 export function Screen() {
     const {
@@ -19,6 +20,20 @@ export function Screen() {
         const savedTheme = localStorage.getItem('turing_theme');
         return (savedTheme as Theme) || 'dark';
     });
+
+    const todayScore = useMemo(() => {
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+
+        return calculateCompletedScoreForRange(
+            tasks,
+            startOfToday.getTime(),
+            endOfToday.getTime()
+        );
+    }, [tasks]);
 
     useEffect(() => {
         document.body.setAttribute('data-theme', theme);
@@ -43,6 +58,7 @@ export function Screen() {
             <div className="app-header">
                 <h1 className="app-title">USCSS TURING </h1>
                 <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
+                <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
                 <button
                     className="theme-toggle"
                     onClick={toggleTheme}

@@ -161,6 +161,15 @@ body {
   position: relative;
 }
 
+.header-score {
+  margin-top: 10px;
+  text-align: center;
+  color: var(--text-highlight);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px var(--text-primary);
+}
+
 .app-title {
   font-size: 24px;
   letter-spacing: 4px;
@@ -586,29 +595,6 @@ body[data-theme="dark"] .app-subtitle {
   text-shadow: none;
 }
 
-/* Corner Brackets */
-.app::before,
-.app::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-color);
-}
-
-.app::before {
-  top: 10px;
-  left: 10px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.app::after {
-  top: 10px;
-  right: 10px;
-  border-left: none;
-  border-bottom: none;
-}
 
 /* Monitor Controls - bezel buttons and power LED */
 .monitor-controls {
