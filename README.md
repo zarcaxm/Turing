@@ -37,7 +37,7 @@ The `postinstall` script will automatically rebuild the native SQLite module for
 Start the Electron app in development mode:
 
 ```bash
-npm run electron:dev
+npm start
 ```
 
 This will concurrently run the Vite dev server and launch the Electron window.
