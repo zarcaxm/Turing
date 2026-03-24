@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles/terminal.css';
 import './styles/crt-effects.css';
 import { Screen } from './components/Terminal/Screen';
@@ -9,6 +9,21 @@ function App() {
   const toggleFullscreen = () => {
     setIsFullscreen(prev => !prev);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f') {
+        event.preventDefault();
+        setIsFullscreen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className={`monitor-frame${isFullscreen ? ' is-fullscreen' : ''}`}>
