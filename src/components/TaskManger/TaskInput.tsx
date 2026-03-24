@@ -9,7 +9,7 @@ interface TaskInputProps {
 
 export function TaskInput({
   onAddTask,
-  placeholder = '> NEW TASK_',
+  placeholder = '> NEW GOAL',
   autoFocus = false,
   showContextInput = false
 }: TaskInputProps) {

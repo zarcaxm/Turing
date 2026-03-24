@@ -25,7 +25,7 @@ export function TaskList({
     <div className="task-list">
       <div className="task-stats">
         <div className="stat-item">
-          <span className="stat-label">TOTAL SCORE:</span>
+          <span className="stat-label">POINT SUM:</span>
           <span className="stat-value">{totalScore} PTS</span>
         </div>
       </div>
