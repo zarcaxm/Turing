@@ -54,6 +54,11 @@ body {
   align-items: center;
 }
 
+.monitor-frame.is-fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
 /* Monitor Bezel - the plastic surround */
 .monitor-bezel {
   width: 100%;
@@ -102,6 +107,13 @@ body {
     8px 12px 40px rgba(0, 0, 0, 0.2);
 }
 
+.monitor-bezel.is-fullscreen {
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* Screen Recess - the lip where screen sinks into bezel */
 .screen-recess {
   flex: 1;
@@ -109,6 +121,11 @@ body {
   border-radius: 14px;
   padding: 4px;
   min-height: 0;
+}
+
+.screen-recess.is-fullscreen {
+  border-radius: 0;
+  padding: 0;
 }
 
 /* Main App Container - the actual screen */
@@ -125,6 +142,12 @@ body {
   border-radius: 12px;
 }
 
+.monitor-frame.is-fullscreen .app {
+  border-radius: 0;
+  border-width: 0;
+  box-shadow: none;
+}
+
 /* Bezel Bottom Panel - controls area */
 .bezel-bottom {
   display: flex;
@@ -132,6 +155,10 @@ body {
   justify-content: space-between;
   padding: 6px 16px 0 16px;
   height: 34px;
+}
+
+.bezel-bottom.is-fullscreen {
+  display: none;
 }
 
 /* Ventilation Slots */
@@ -193,9 +220,26 @@ body[data-theme="dark"] .app-subtitle {
 
 /* Theme Toggle Button */
 .theme-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 6px 12px;
+  transition: all 0.2s;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+.header-controls {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.fullscreen-toggle {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -208,6 +252,13 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .theme-toggle:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+  text-shadow: none;
+}
+
+.fullscreen-toggle:hover {
   background-color: var(--text-primary);
   color: var(--bg-dark);
   box-shadow: 0 0 10px var(--text-primary);

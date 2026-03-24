@@ -4,7 +4,12 @@ import { TaskInput } from "../TaskManger/TaskInput";
 import { TaskList } from "../TaskManger/TaskList";
 import { calculateCompletedScoreForRange } from "@/utils/scoring";
 
-export function Screen() {
+interface ScreenProps {
+    isFullscreen: boolean;
+    onToggleFullscreen: () => void | Promise<void>;
+}
+
+export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
     const {
         tasks,
         addTask,
@@ -59,13 +64,22 @@ export function Screen() {
                 <h1 className="app-title">USCSS TURING </h1>
                 <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
                 <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
-                <button
-                    className="theme-toggle"
-                    onClick={toggleTheme}
-                    aria-label="Toggle theme"
-                >
-                    [{theme === 'dark' ? 'LIGHT' : 'DARK'} MODE]
-                </button>
+                <div className="header-controls">
+                    <button
+                        className="fullscreen-toggle"
+                        onClick={() => void onToggleFullscreen()}
+                        aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                    >
+                        [{isFullscreen ? 'EXIT FULLSCREEN' : 'FULLSCREEN'}]
+                    </button>
+                    <button
+                        className="theme-toggle"
+                        onClick={toggleTheme}
+                        aria-label="Toggle theme"
+                    >
+                        [{theme === 'dark' ? 'LIGHT' : 'DARK'} MODE]
+                    </button>
+                </div>
             </div>
 
             <TaskInput onAddTask={handleAddRootTask} autoFocus={true} />
