@@ -48,7 +48,10 @@ export function TaskItem({
   const isExpanded = task.expanded !== false; // Default to true if undefined
 
   return (
-    <div className="task-item" style={{ marginLeft: `${task.level * 20}px` }}>
+    <div
+      className="task-item"
+      style={{ '--task-indent': `${task.level * 20}px` } as React.CSSProperties}
+    >
       <div className="task-content">
         {/* Expand/Collapse button */}
         {hasSubtasks && (
@@ -119,7 +122,10 @@ export function TaskItem({
 
       {/* Context display/edit */}
       {(editingContext || (task.context && showContext)) && (
-        <div className="task-context" style={{ marginLeft: `${task.level * 20 + 40}px` }}>
+        <div
+          className="task-context"
+          style={{ '--task-context-indent': `${task.level * 20 + 40}px` } as React.CSSProperties}
+        >
           {editingContext ? (
             <div className="task-context-edit">
               <input
@@ -158,7 +164,7 @@ export function TaskItem({
 
       {/* Subtask input */}
       {showInput && (
-        <div className="task-subtask-input" style={{ marginLeft: '20px' }}>
+        <div className="task-subtask-input">
           <TaskInput
             onAddTask={handleAddSubtask}
             placeholder="> NEW SUBTASK_"
