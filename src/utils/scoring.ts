@@ -59,3 +59,37 @@ export function calculateCompletedScoreForRange(
 
   return total;
 }
+
+function getLocalDateKey(timestamp: number): string {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Recursively aggregate completed task scores by local calendar day.
+ * Keys use YYYY-MM-DD in the user's local timezone.
+ */
+export function calculateCompletedScoresByDay(tasks: Task[]): Record<string, number> {
+  const totals: Record<string, number> = {};
+
+  for (const task of tasks) {
+    if (task.completed && task.completedAt !== undefined) {
+      const dayKey = getLocalDateKey(task.completedAt);
+      totals[dayKey] = (totals[dayKey] ?? 0) + task.score;
+    }
+
+    if (task.subtasks.length > 0) {
+      const subtaskTotals = calculateCompletedScoresByDay(task.subtasks);
+
+      for (const [dayKey, score] of Object.entries(subtaskTotals)) {
+        totals[dayKey] = (totals[dayKey] ?? 0) + score;
+      }
+    }
+  }
+
+  return totals;
+}
