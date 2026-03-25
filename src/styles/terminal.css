@@ -198,6 +198,15 @@ body {
   text-shadow: 0 0 8px var(--text-primary);
 }
 
+.app-mode-banner {
+  margin-top: 10px;
+  text-align: center;
+  color: #f7cc0a;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(247, 204, 10, 0.45);
+}
+
 .app-title {
   font-size: 24px;
   letter-spacing: 4px;
@@ -965,6 +974,12 @@ body[data-theme="dark"] .app-subtitle {
   .header-score {
     font-size: 12px;
     letter-spacing: 1px;
+  }
+
+  .app-mode-banner {
+    font-size: 11px;
+    letter-spacing: 1px;
+    line-height: 1.4;
   }
 
   .header-controls {

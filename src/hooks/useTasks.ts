@@ -5,11 +5,17 @@ import { assignTaskNumbers } from '../utils/numbering';
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasElectronApi = typeof window !== 'undefined' && typeof window.electron !== 'undefined';
 
   const numberedTasks = useMemo(() => assignTaskNumbers(tasks), [tasks]);
 
   // Load tasks from SQLite on mount, migrate localStorage data if present
   useEffect(() => {
+    if (!hasElectronApi) {
+      setLoading(false);
+      return;
+    }
+
     async function init() {
       try {
         const legacyData = localStorage.getItem('turing_tasks');
@@ -30,37 +36,42 @@ export function useTasks() {
       }
     }
     init();
-  }, []);
+  }, [hasElectronApi]);
 
   const addTask = useCallback(async (title: string, parentId: string | null = null, context?: string) => {
-    if (!title.trim()) return;
+    if (!title.trim() || !hasElectronApi) return;
     const updatedTasks = await window.electron.addTask({ title, parentId, context });
     setTasks(updatedTasks);
-  }, []);
+  }, [hasElectronApi]);
 
   const deleteTask = useCallback(async (taskId: string) => {
+    if (!hasElectronApi) return;
     const updatedTasks = await window.electron.deleteTask({ taskId });
     setTasks(updatedTasks);
-  }, []);
+  }, [hasElectronApi]);
 
   const toggleComplete = useCallback(async (taskId: string) => {
+    if (!hasElectronApi) return;
     const updatedTasks = await window.electron.toggleComplete({ taskId });
     setTasks(updatedTasks);
-  }, []);
+  }, [hasElectronApi]);
 
   const toggleExpand = useCallback(async (taskId: string) => {
+    if (!hasElectronApi) return;
     const updatedTasks = await window.electron.toggleExpand({ taskId });
     setTasks(updatedTasks);
-  }, []);
+  }, [hasElectronApi]);
 
   const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
+    if (!hasElectronApi) return;
     const updatedTasks = await window.electron.updateTask({ taskId, updates });
     setTasks(updatedTasks);
-  }, []);
+  }, [hasElectronApi]);
 
   return {
     tasks: numberedTasks,
     loading,
+    hasElectronApi,
     addTask,
     deleteTask,
     toggleComplete,

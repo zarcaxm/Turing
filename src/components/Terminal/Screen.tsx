@@ -10,6 +10,8 @@ interface ScreenProps {
 }
 
 export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
+    const isWebMode = typeof window !== 'undefined' && !window.electron;
+
     const {
         tasks,
         addTask,
@@ -63,6 +65,9 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
             <div className="app-header">
                 <h1 className="app-title">HYPERION </h1>
                 <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
+                {isWebMode && (
+                    <div className="app-mode-banner">WEB MODE • ELECTRON FEATURES DISABLED</div>
+                )}
                 <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
                 <div className="header-controls">
                     <button
