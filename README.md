@@ -1,4 +1,4 @@
-# USCSS TURING
+# HYPERION
 An alien-inspired retro terminal task manager with nested task support and a nostalgic CRT aesthetic. Built as a desktop application using Electron, React, and TypeScript.
 
 <img width="1156" height="731" alt="image" src="https://github.com/user-attachments/assets/aa6db75c-a428-40c6-9952-abf5048fa8f4" />
@@ -95,7 +95,7 @@ useTasks hook  ──►  window.electron.getTasks()  ──►  database.getAll
 - **Renderer process** (`src/`) runs the React UI in a browser context
 - **Preload script** securely bridges the two via `contextBridge`
 
-The database is stored at `%APPDATA%/turing-task-manager/turing-tasks.db` (Windows).
+The database is stored at `%APPDATA%/hyperion-task-manager/turing-tasks.db` (Windows).
 
 ## Task System
 

@@ -1,5 +1,5 @@
 {
-  "name": "turing-task-manager",
+  "name": "hyperion-task-manager",
   "version": "1.2.0",
   "description": "Alien-inspired retro terminal task manager with nested tasks",
   "main": "electron/main.js",
@@ -51,7 +51,7 @@
   },
   "build": {
     "appId": "com.turing.taskmanager",
-    "productName": "Turing Task Manager",
+    "productName": "Hyperion Task Manager",
     "directories": {
       "output": "release"
     },
@@ -71,7 +71,7 @@
       "target": [
         "nsis"
       ],
-      "artifactName": "Turing-Task-Manager-Setup-${version}.${ext}"
+      "artifactName": "Hyperion-Task-Manager-Setup-${version}.${ext}"
     },
     "linux": {
       "target": [

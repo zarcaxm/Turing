@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This project uses GitHub Actions to automatically build and release the Turing Task Manager desktop application.
+This project uses GitHub Actions to automatically build and release the Hyperion Task Manager desktop application.
 
 ## Prerequisites
 

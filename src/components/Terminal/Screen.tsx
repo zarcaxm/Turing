@@ -61,7 +61,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
     return (
         <div className="app">
             <div className="app-header">
-                <h1 className="app-title">USCSS TURING </h1>
+                <h1 className="app-title">HYPERION </h1>
                 <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>
                 <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
                 <div className="header-controls">

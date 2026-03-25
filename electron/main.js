@@ -15,7 +15,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     backgroundColor: '#000000',
-    title: 'Turing Task Manager'
+    title: 'Hyperion Task Manager'
   });
 
   // Load the app
