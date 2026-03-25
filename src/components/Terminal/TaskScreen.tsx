@@ -1,0 +1,39 @@
+import { Task } from "@/types/task";
+import { TaskInput } from "../TaskManger/TaskInput";
+import { TaskList } from "../TaskManger/TaskList";
+
+interface TaskScreenProps {
+    tasks: Task[];
+    onAddRootTask: (title: string, context?: string) => void;
+    onToggleComplete: (taskId: string) => void;
+    onDelete: (taskId: string) => void;
+    onAddSubtask: (parentId: string, title: string, context?: string) => void;
+    onToggleExpand: (taskId: string) => void;
+    onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
+}
+
+export function TaskScreen({
+    tasks,
+    onAddRootTask,
+    onToggleComplete,
+    onDelete,
+    onAddSubtask,
+    onToggleExpand,
+    onUpdateTask,
+}: TaskScreenProps) {
+
+    return (
+        <div className="task-screen">
+            <TaskInput onAddTask={onAddRootTask} autoFocus={true} />
+
+            <TaskList
+                tasks={tasks}
+                onToggleComplete={onToggleComplete}
+                onDelete={onDelete}
+                onAddSubtask={onAddSubtask}
+                onToggleExpand={onToggleExpand}
+                onUpdateTask={onUpdateTask}
+            />
+        </div>
+    );
+}

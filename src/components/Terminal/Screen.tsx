@@ -1,8 +1,8 @@
 import { useTasks } from "@/hooks/useTasks";
 import { useEffect, useMemo, useState } from "react";
-import { TaskInput } from "../TaskManger/TaskInput";
-import { TaskList } from "../TaskManger/TaskList";
 import { calculateCompletedScoreForRange } from "@/utils/scoring";
+import { TaskScreen } from "./TaskScreen";
+import { CalendarScreen } from "./CalendarScreen";
 
 interface ScreenProps {
     isFullscreen: boolean;
@@ -82,16 +82,18 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                 </div>
             </div>
 
-            <TaskInput onAddTask={handleAddRootTask} autoFocus={true} />
-
-            <TaskList
-                tasks={tasks}
-                onToggleComplete={toggleComplete}
-                onDelete={deleteTask}
-                onAddSubtask={handleAddSubtask}
-                onToggleExpand={toggleExpand}
-                onUpdateTask={updateTask}
-            />
+            <div className="screen-content">
+                <TaskScreen
+                    tasks={tasks}
+                    onToggleComplete={toggleComplete}
+                    onDelete={deleteTask}
+                    onAddRootTask={handleAddRootTask}
+                    onAddSubtask={handleAddSubtask}
+                    onToggleExpand={toggleExpand}
+                    onUpdateTask={updateTask}
+                />
+                <CalendarScreen tasks={tasks} />
+            </div>
         </div>
     );
 }
