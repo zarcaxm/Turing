@@ -22,6 +22,7 @@ export function TaskItem({
   const [showInput, setShowInput] = useState(false);
   const [showContext, setShowContext] = useState(true);
   const [editingContext, setEditingContext] = useState(false);
+  const [showCompletedSubtasks, setShowCompletedSubtasks] = useState(true);
   const [titleValue, setTitleValue] = useState(task.title);
   const [contextValue, setContextValue] = useState(task.context || '');
 
@@ -45,6 +46,10 @@ export function TaskItem({
   };
 
   const hasSubtasks = task.subtasks.length > 0;
+  const completedSubtaskCount = task.subtasks.filter(subtask => subtask.completed).length;
+  const visibleSubtasks = showCompletedSubtasks
+    ? task.subtasks
+    : task.subtasks.filter(subtask => !subtask.completed);
   const isExpanded = task.expanded !== false; // Default to true if undefined
 
   return (
@@ -84,6 +89,18 @@ export function TaskItem({
 
         {/* Score badge */}
         <span className="task-score">[{task.score} PTS]</span>
+
+        {/* Completed subtask visibility toggle */}
+        {hasSubtasks && completedSubtaskCount > 0 && (
+          <button
+            className={`task-visibility-btn ${showCompletedSubtasks ? 'active' : ''}`}
+            onClick={() => setShowCompletedSubtasks(current => !current)}
+            aria-label={showCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+            title={showCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+          >
+            {showCompletedSubtasks ? '◉' : '○'}
+          </button>
+        )}
 
         {/* Add subtask button */}
         {!task.completed &&
@@ -174,9 +191,9 @@ export function TaskItem({
       )}
       {/* 
       Makes parent task dissapear when checked  */}
-      {isExpanded && hasSubtasks && !task.completed && (
+      {isExpanded && hasSubtasks && !task.completed && visibleSubtasks.length > 0 && (
         <div className="task-subtasks">
-          {task.subtasks.map(subtask => (
+          {visibleSubtasks.map(subtask => (
             <TaskItem
               key={subtask.id}
               task={subtask}

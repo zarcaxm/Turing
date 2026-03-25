@@ -494,7 +494,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-expand-btn,
 .task-checkbox,
 .task-add-btn,
-.task-delete-btn {
+.task-delete-btn,
+.task-visibility-btn {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -529,6 +530,7 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .task-expand-btn:hover,
+.task-visibility-btn:hover,
 .task-add-btn:hover,
 .task-delete-btn:hover {
   background-color: var(--text-primary);
@@ -560,6 +562,20 @@ body[data-theme="dark"] .app-subtitle {
   font-weight: bold;
   font-size: 14px;
   text-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-visibility-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-visibility-btn.active {
+  border-color: var(--text-highlight);
+  color: var(--text-highlight);
 }
 
 /* Delete Button */
@@ -1018,7 +1034,8 @@ body[data-theme="dark"] .app-subtitle {
   .task-checkbox,
   .task-add-btn,
   .task-delete-btn,
-  .task-context-btn {
+  .task-context-btn,
+  .task-visibility-btn {
     flex: 0 0 28px;
     width: 28px;
     height: 28px;
