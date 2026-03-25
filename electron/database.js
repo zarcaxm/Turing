@@ -1,11 +1,48 @@
 const Database = require('better-sqlite3');
+const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
 
 let db;
 
+function getLegacyDatabasePaths(targetDbPath) {
+  const appDataPath = app.getPath('appData');
+  const candidateDirs = [
+    'Hyperion Task Manager',
+    'hyperion-task-manager',
+    'Turing',
+    'turing-task-manager',
+  ];
+
+  return candidateDirs
+    .map((dir) => path.join(appDataPath, dir, 'turing-tasks.db'))
+    .filter((candidatePath) => candidatePath !== targetDbPath);
+}
+
+function migrateLegacyDatabase(dbPath) {
+  if (fs.existsSync(dbPath)) {
+    return;
+  }
+
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
+  const legacyDbPath = getLegacyDatabasePaths(dbPath).find((candidatePath) => fs.existsSync(candidatePath));
+  if (!legacyDbPath) {
+    return;
+  }
+
+  for (const suffix of ['', '-wal', '-shm']) {
+    const sourcePath = `${legacyDbPath}${suffix}`;
+    const targetPath = `${dbPath}${suffix}`;
+    if (fs.existsSync(sourcePath) && !fs.existsSync(targetPath)) {
+      fs.copyFileSync(sourcePath, targetPath);
+    }
+  }
+}
+
 function initDatabase() {
   const dbPath = path.join(app.getPath('userData'), 'turing-tasks.db');
+  migrateLegacyDatabase(dbPath);
   db = new Database(dbPath);
 
   db.pragma('journal_mode = WAL');

@@ -5,6 +5,10 @@ const database = require('./database');
 
 let mainWindow;
 
+// Keep task data in a stable directory across packaged releases and app renames.
+const stableUserDataPath = path.join(app.getPath('appData'), 'hyperion-task-manager');
+app.setPath('userData', stableUserDataPath);
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
