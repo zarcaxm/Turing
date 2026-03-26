@@ -15,7 +15,7 @@ Edit [package.json](package.json) and update the version:
 "version": "1.0.1"
 ```
 
-### Step 2: Commit Your Changes
+### Step 2: Commit Your ChangesP
 ```bash
 git add .
 git commit -m "Release v1.0.1"
