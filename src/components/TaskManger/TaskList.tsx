@@ -1,6 +1,6 @@
 import { Task } from '../../types/task';
 import { TaskItem } from './TaskItem';
-import { calculateTotalScore } from '../../utils/scoring';
+import { calculateCompletedScoreForRange } from '../../utils/scoring';
 
 interface TaskListProps {
   tasks: Task[];
@@ -19,7 +19,17 @@ export function TaskList({
   onToggleExpand,
   onUpdateTask
 }: TaskListProps) {
-  const totalScore = calculateTotalScore(tasks);
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+
+  const totalScore = calculateCompletedScoreForRange(
+    tasks,
+    startOfToday.getTime(),
+    endOfToday.getTime()
+  );
 
   return (
     <div className="task-list">
