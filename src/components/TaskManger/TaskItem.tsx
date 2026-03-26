@@ -50,6 +50,7 @@ export function TaskItem({
   const visibleSubtasks = showCompletedSubtasks
     ? task.subtasks
     : task.subtasks.filter(subtask => !subtask.completed);
+  const hasVisibleSubtasks = visibleSubtasks.length > 0;
   const isExpanded = task.expanded !== false; // Default to true if undefined
 
   return (
@@ -59,7 +60,7 @@ export function TaskItem({
     >
       <div className="task-content">
         {/* Expand/Collapse button */}
-        {hasSubtasks && (
+        {hasVisibleSubtasks && (
           <button
             className="task-expand-btn"
             onClick={() => onToggleExpand(task.id)}
@@ -191,7 +192,7 @@ export function TaskItem({
       )}
       {/* 
       Makes parent task dissapear when checked  */}
-      {isExpanded && hasSubtasks && !task.completed && visibleSubtasks.length > 0 && (
+      {isExpanded && hasVisibleSubtasks && !task.completed && (
         <div className="task-subtasks">
           {visibleSubtasks.map(subtask => (
             <TaskItem
