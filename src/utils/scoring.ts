@@ -10,21 +10,19 @@ export function calculateScore(level: number): number {
 }
 
 /**
- * Recursively calculate the total score for all incomplete tasks
- * Only counts tasks that are not completed
+ * Recursively calculate the total score for completed tasks only.
+ * Deleted tasks are excluded because they are no longer present in the task tree.
  */
 export function calculateTotalScore(tasks: Task[]): number {
   let total = 0;
 
   for (const task of tasks) {
-    // Only count incomplete tasks
-    if (!task.completed) {
+    if (task.completed) {
       total += task.score;
+    }
 
-      // Recursively add subtask scores
-      if (task.subtasks.length > 0) {
-        total += calculateTotalScore(task.subtasks);
-      }
+    if (task.subtasks.length > 0) {
+      total += calculateTotalScore(task.subtasks);
     }
   }
 
