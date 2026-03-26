@@ -281,6 +281,7 @@ body[data-theme="dark"] .app-subtitle {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.95fr);
   gap: 20px;
+  overflow: hidden;
 }
 
 .task-screen {
@@ -292,6 +293,7 @@ body[data-theme="dark"] .app-subtitle {
 
 .calendar-screen {
   min-width: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -299,6 +301,7 @@ body[data-theme="dark"] .app-subtitle {
   background-color: var(--bg-medium);
   padding: 14px;
   min-height: 0;
+  overflow: hidden;
 }
 
 .calendar-header {
@@ -355,8 +358,12 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .calendar-grid {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  align-content: stretch;
   gap: 8px;
 }
 
@@ -368,7 +375,7 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .calendar-day {
-  min-height: 76px;
+  min-height: clamp(54px, 9vh, 76px);
   padding: 8px;
   border: 1px solid var(--text-dim);
   background-color: var(--bg-dark);
@@ -867,6 +874,51 @@ body[data-theme="dark"] .app-subtitle {
   user-select: none;
   background-color: #0a0a0a;
   padding: 5px
+}
+
+@media (max-width: 1280px), (max-height: 860px) {
+  .app {
+    padding: 16px;
+  }
+
+  .app-header {
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    padding-right: 300px;
+  }
+
+  .screen-content {
+    grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
+    gap: 16px;
+  }
+
+  .task-list {
+    padding: 18px 14px 12px;
+  }
+
+  .calendar-screen {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .calendar-grid {
+    gap: 6px;
+  }
+
+  .calendar-day {
+    min-height: clamp(48px, 7.5vh, 68px);
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .calendar-day-number {
+    font-size: 13px;
+  }
+
+  .calendar-day-score {
+    font-size: 11px;
+    line-height: 1.2;
+  }
 }
 
 @media (max-width: 900px) {
