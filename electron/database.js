@@ -159,15 +159,41 @@ function deleteTask(taskId) {
   return getAllTasks();
 }
 
+function getTaskBranchIds(taskId) {
+  const rows = db.prepare(`
+    WITH RECURSIVE task_branch(id) AS (
+      SELECT id
+      FROM tasks
+      WHERE id = ?
+
+      UNION ALL
+
+      SELECT tasks.id
+      FROM tasks
+      INNER JOIN task_branch ON tasks.parentId = task_branch.id
+    )
+    SELECT id FROM task_branch
+  `).all(taskId);
+
+  return rows.map((row) => row.id);
+}
+
 function toggleComplete(taskId) {
   const task = db.prepare('SELECT completed FROM tasks WHERE id = ?').get(taskId);
   if (!task) return getAllTasks();
 
   const newCompleted = task.completed === 1 ? 0 : 1;
   const completedAt = newCompleted === 1 ? Date.now() : null;
+  const branchIds = getTaskBranchIds(taskId);
+  const expanded = newCompleted === 1 ? 0 : 1;
+  const updateCompletion = db.prepare('UPDATE tasks SET completed = ?, completedAt = ?, expanded = ? WHERE id = ?');
+  const updateBranchCompletion = db.transaction((ids) => {
+    ids.forEach((id) => {
+      updateCompletion.run(newCompleted, completedAt, expanded, id);
+    });
+  });
 
-  db.prepare('UPDATE tasks SET completed = ?, completedAt = ? WHERE id = ?')
-    .run(newCompleted, completedAt, taskId);
+  updateBranchCompletion(branchIds);
 
   return getAllTasks();
 }
