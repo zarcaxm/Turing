@@ -52,13 +52,14 @@ export function TaskItem({
     : task.subtasks.filter(subtask => !subtask.completed);
   const hasVisibleSubtasks = visibleSubtasks.length > 0;
   const isExpanded = task.expanded !== false; // Default to true if undefined
+  const isMainTask = task.level === 0;
 
   return (
     <div
       className="task-item"
       style={{ '--task-indent': `${task.level * 20}px` } as React.CSSProperties}
     >
-      <div className="task-content">
+      <div className={`task-content ${isMainTask ? 'is-main-task' : ''}`}>
         {/* Expand/Collapse button */}
         {hasVisibleSubtasks && (
           <button
