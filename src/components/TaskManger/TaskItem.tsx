@@ -190,9 +190,7 @@ export function TaskItem({
           />
         </div>
       )}
-      {/* 
-      Makes parent task dissapear when checked  */}
-      {isExpanded && hasVisibleSubtasks && !task.completed && (
+      {isExpanded && hasVisibleSubtasks && (
         <div className="task-subtasks">
           {visibleSubtasks.map(subtask => (
             <TaskItem

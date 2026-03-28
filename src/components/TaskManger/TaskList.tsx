@@ -11,6 +11,14 @@ interface TaskListProps {
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
+function hasVisibleTask(task: Task): boolean {
+  if (!task.completed) {
+    return true;
+  }
+
+  return task.subtasks.some(hasVisibleTask);
+}
+
 export function TaskList({
   tasks,
   onToggleComplete,
@@ -44,7 +52,7 @@ export function TaskList({
         {tasks.length === 0 ? (
           <div className="no-tasks">NO ACTIVE TASKS</div>
         ) : (
-          tasks.filter(task => !task.completed).map(task => (
+          tasks.filter(hasVisibleTask).map(task => (
             <TaskItem
               key={task.id}
               task={task}
