@@ -101,13 +101,11 @@ The database is stored at `%APPDATA%/hyperion-task-manager/turing-tasks.db` (Win
 
 ### Scoring
 
-- **Root tasks**: 100 points
-- **1st level subtasks**: 90 points
-- **2nd level subtasks**: 80 points
-- **3rd level subtasks**: 70 points
-- And so on (minimum 0 points)
+- **Leaf tasks**: base score is `100 - (level × 10)` with a minimum of 0
+- **Parent tasks**: score is the sum of their direct subtasks
+- This means breaking work into more subtasks increases the parent task's total value
 
-Only incomplete tasks contribute to the total score.
+Completed score displays are calculated from completed tasks in the tree.
 
 ## Theme
 

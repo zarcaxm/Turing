@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task } from '../types/task';
 import { assignTaskNumbers } from '../utils/numbering';
+import { deriveTaskScores } from '../utils/scoring';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const hasElectronApi = typeof window !== 'undefined' && typeof window.electron !== 'undefined';
 
-  const numberedTasks = useMemo(() => assignTaskNumbers(tasks), [tasks]);
+  const numberedTasks = useMemo(() => assignTaskNumbers(deriveTaskScores(tasks)), [tasks]);
 
   // Load tasks from SQLite on mount, migrate localStorage data if present
   useEffect(() => {

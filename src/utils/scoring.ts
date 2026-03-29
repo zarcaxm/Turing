@@ -1,12 +1,30 @@
 import { Task } from '../types/task';
 
 /**
- * Calculate the score for a task based on its nesting level
- * Base score is 100, decreases by 10 per level
- * Minimum score is 0
+ * Calculate the base score for a leaf task from its nesting level.
+ * Base score is 100, decreases by 10 per level, minimum 0.
  */
 export function calculateScore(level: number): number {
   return Math.max(0, 100 - (level * 10));
+}
+
+/**
+ * Rebuild task scores so any parent task is worth the sum of its direct subtasks.
+ * Leaf tasks keep their depth-based base score.
+ */
+export function deriveTaskScores(tasks: Task[]): Task[] {
+  return tasks.map((task) => {
+    const subtasks = deriveTaskScores(task.subtasks);
+    const score = subtasks.length > 0
+      ? subtasks.reduce((total, subtask) => total + subtask.score, 0)
+      : calculateScore(task.level);
+
+    return {
+      ...task,
+      score,
+      subtasks,
+    };
+  });
 }
 
 /**
