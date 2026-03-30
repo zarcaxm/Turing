@@ -357,6 +357,13 @@ body[data-theme="dark"] .app-subtitle {
   letter-spacing: 1px;
 }
 
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 0;
+}
+
 .calendar-grid {
   flex: 1;
   min-height: 0;
@@ -920,6 +927,10 @@ body[data-theme="dark"] .app-subtitle {
 
   .calendar-grid {
     gap: 6px;
+  }
+
+  .calendar-weekdays {
+    column-gap: 6px;
   }
 
   .calendar-day {

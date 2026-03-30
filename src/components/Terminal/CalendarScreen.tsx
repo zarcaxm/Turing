@@ -113,13 +113,15 @@ export function CalendarScreen({ tasks }: CalendarScreenProps) {
 
             <div className="calendar-month-score">MONTH SCORE: {monthScore} PTS</div>
 
-            <div className="calendar-grid">
+            <div className="calendar-weekdays">
                 {DAY_LABELS.map((label) => (
                     <div key={label} className="calendar-weekday">
                         {label}
                     </div>
                 ))}
+            </div>
 
+            <div className="calendar-grid">
                 {calendarDays.map((day) => (
                     <div
                         key={day.key}
