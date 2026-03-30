@@ -2,15 +2,16 @@ import { Task } from '../types/task';
 
 /**
  * Calculate the base score for a leaf task from its nesting level.
- * Base score is 100, decreases by 10 per level, minimum 0.
+ * Base score is 10, decreases by 2 per level, minimum 3.
  */
 export function calculateScore(level: number): number {
-  return Math.max(0, 100 - (level * 10));
+  return Math.max(3, 10 - (level * 2));
 }
 
 /**
- * Rebuild task scores so any parent task is worth the sum of its direct subtasks.
+ * Rebuild task scores for display.
  * Leaf tasks keep their depth-based base score.
+ * Parent tasks display the sum of their direct child scores.
  */
 export function deriveTaskScores(tasks: Task[]): Task[] {
   return tasks.map((task) => {
@@ -28,18 +29,20 @@ export function deriveTaskScores(tasks: Task[]): Task[] {
 }
 
 /**
- * Recursively calculate the total score for completed tasks only.
+ * Recursively calculate the total score for completed leaf tasks only.
  * Deleted tasks are excluded because they are no longer present in the task tree.
  */
 export function calculateTotalScore(tasks: Task[]): number {
   let total = 0;
 
   for (const task of tasks) {
-    if (task.completed) {
+    const isLeafTask = task.subtasks.length === 0;
+
+    if (task.completed && isLeafTask) {
       total += task.score;
     }
 
-    if (task.subtasks.length > 0) {
+    if (!isLeafTask) {
       total += calculateTotalScore(task.subtasks);
     }
   }
@@ -48,8 +51,8 @@ export function calculateTotalScore(tasks: Task[]): number {
 }
 
 /**
- * Recursively calculate the total score for tasks completed within a date range.
- * Only counts tasks that are completed and have a completion timestamp in range.
+ * Recursively calculate the total score for leaf tasks completed within a date range.
+ * Only counts leaf tasks that are completed and have a completion timestamp in range.
  */
 export function calculateCompletedScoreForRange(
   tasks: Task[],
@@ -59,8 +62,11 @@ export function calculateCompletedScoreForRange(
   let total = 0;
 
   for (const task of tasks) {
+    const isLeafTask = task.subtasks.length === 0;
+
     if (
       task.completed &&
+      isLeafTask &&
       task.completedAt !== undefined &&
       task.completedAt >= startTime &&
       task.completedAt <= endTime
@@ -68,7 +74,7 @@ export function calculateCompletedScoreForRange(
       total += task.score;
     }
 
-    if (task.subtasks.length > 0) {
+    if (!isLeafTask) {
       total += calculateCompletedScoreForRange(task.subtasks, startTime, endTime);
     }
   }
@@ -86,19 +92,21 @@ function getLocalDateKey(timestamp: number): string {
 }
 
 /**
- * Recursively aggregate completed task scores by local calendar day.
+ * Recursively aggregate completed leaf task scores by local calendar day.
  * Keys use YYYY-MM-DD in the user's local timezone.
  */
 export function calculateCompletedScoresByDay(tasks: Task[]): Record<string, number> {
   const totals: Record<string, number> = {};
 
   for (const task of tasks) {
-    if (task.completed && task.completedAt !== undefined) {
+    const isLeafTask = task.subtasks.length === 0;
+
+    if (task.completed && isLeafTask && task.completedAt !== undefined) {
       const dayKey = getLocalDateKey(task.completedAt);
       totals[dayKey] = (totals[dayKey] ?? 0) + task.score;
     }
 
-    if (task.subtasks.length > 0) {
+    if (!isLeafTask) {
       const subtaskTotals = calculateCompletedScoresByDay(task.subtasks);
 
       for (const [dayKey, score] of Object.entries(subtaskTotals)) {

@@ -101,12 +101,11 @@ The database is stored at `%APPDATA%/hyperion-task-manager/turing-tasks.db` on W
 
 ### Scoring
 
-- **Leaf tasks**: base score is `100 - (level * 10)` with a minimum of 0
-- **Parent tasks**: score is the sum of their direct subtasks
-- Breaking work into more subtasks increases the parent task's total value
+- **Leaf tasks**: base score is `10 - (level * 2)` with a minimum of 3
+- **Parent tasks**: display the sum of their direct subtasks so larger task groups still show their rolled-up value
+- Completed score displays count completed leaf tasks only, which keeps daily/monthly totals from inflating due to nested task structure
 
-Scores are derived from the current task tree in the renderer, so parent totals update automatically as subtasks are added or removed.
-Completed score displays are calculated from completed tasks in the tree.
+Scores are derived from the current task tree in the renderer.
 
 ## Theme
 
