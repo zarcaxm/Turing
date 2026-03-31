@@ -1,6 +1,6 @@
 {
   "name": "hyperion-task-manager",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Creative sci-fi inspired task platform with nested subtasks",
   "main": "electron/main.js",
   "scripts": {
