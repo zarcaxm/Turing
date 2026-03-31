@@ -9,6 +9,7 @@ interface TaskListProps {
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
   onToggleExpand: (taskId: string) => void;
+  onStartTimer: (taskId: string, ancestorIds: string[]) => void;
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
@@ -19,6 +20,7 @@ export function TaskList({
   onDelete,
   onAddSubtask,
   onToggleExpand,
+  onStartTimer,
   onUpdateTask
 }: TaskListProps) {
   const startOfToday = new Date();
@@ -55,6 +57,7 @@ export function TaskList({
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
               onToggleExpand={onToggleExpand}
+              onStartTimer={onStartTimer}
               onUpdateTask={onUpdateTask}
             />
           ))

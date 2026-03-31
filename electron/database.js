@@ -202,6 +202,27 @@ function toggleExpand(taskId) {
   return getAllTasks();
 }
 
+function startTaskTimer(taskId, ancestorIds = []) {
+  const now = Date.now();
+  const taskIds = Array.from(new Set([taskId, ...ancestorIds]));
+  const updateStmt = db.prepare(`
+    UPDATE tasks
+    SET timerStartedAt = ?
+    WHERE id = ?
+      AND completed = 0
+      AND timerStartedAt IS NULL
+  `);
+
+  const startTimers = db.transaction((ids) => {
+    for (const id of ids) {
+      updateStmt.run(now, id);
+    }
+  });
+
+  startTimers(taskIds);
+  return getAllTasks();
+}
+
 function updateTask(taskId, updates) {
   const setClauses = [];
   const values = [];
@@ -290,6 +311,7 @@ module.exports = {
   deleteTask,
   toggleComplete,
   toggleExpand,
+  startTaskTimer,
   updateTask,
   importFromLocalStorage,
   getTasksByDateRange,

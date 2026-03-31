@@ -10,6 +10,7 @@ interface TaskScreenProps {
     onDelete: (taskId: string) => void;
     onAddSubtask: (parentId: string, title: string, context?: string) => void;
     onToggleExpand: (taskId: string) => void;
+    onStartTimer: (taskId: string, ancestorIds: string[]) => void;
     onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
@@ -21,6 +22,7 @@ export function TaskScreen({
     onDelete,
     onAddSubtask,
     onToggleExpand,
+    onStartTimer,
     onUpdateTask,
 }: TaskScreenProps) {
 
@@ -35,6 +37,7 @@ export function TaskScreen({
                 onDelete={onDelete}
                 onAddSubtask={onAddSubtask}
                 onToggleExpand={onToggleExpand}
+                onStartTimer={onStartTimer}
                 onUpdateTask={onUpdateTask}
             />
         </div>

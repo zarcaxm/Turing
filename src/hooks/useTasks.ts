@@ -79,6 +79,12 @@ export function useTasks() {
     setTasks(updatedTasks);
   }, [hasElectronApi]);
 
+  const startTaskTimer = useCallback(async (taskId: string, ancestorIds: string[] = []) => {
+    if (!hasElectronApi) return;
+    const updatedTasks = await window.electron.startTaskTimer({ taskId, ancestorIds });
+    setTasks(updatedTasks);
+  }, [hasElectronApi]);
+
   const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
     if (!hasElectronApi) return;
     const updatedTasks = await window.electron.updateTask({ taskId, updates });
@@ -94,6 +100,7 @@ export function useTasks() {
     deleteTask,
     toggleComplete,
     toggleExpand,
+    startTaskTimer,
     updateTask,
   };
 }

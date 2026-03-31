@@ -6,20 +6,24 @@ import { formatElapsedTime, getTaskElapsedTime, getTaskTotalElapsedTime } from '
 interface TaskItemProps {
   task: Task;
   now: number;
+  ancestorIds?: string[];
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
   onToggleExpand: (taskId: string) => void;
+  onStartTimer: (taskId: string, ancestorIds: string[]) => void;
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
 export function TaskItem({
   task,
   now,
+  ancestorIds = [],
   onToggleComplete,
   onDelete,
   onAddSubtask,
   onToggleExpand,
+  onStartTimer,
   onUpdateTask
 }: TaskItemProps) {
   const [showInput, setShowInput] = useState(false);
@@ -71,9 +75,7 @@ export function TaskItem({
       return;
     }
 
-    onUpdateTask(task.id, {
-      timerStartedAt: Date.now()
-    });
+    onStartTimer(task.id, ancestorIds);
   };
 
   return (
@@ -118,17 +120,15 @@ export function TaskItem({
           <span className="task-timer">
             [{hasSubtasks ? `TOTAL ${formatElapsedTime(totalElapsedTime)}` : formatElapsedTime(ownElapsedTime)}]
           </span>
-          {!hasSubtasks && (
-            <button
-              className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
-              onClick={handleToggleTimer}
-              disabled={task.completed}
-              aria-label={isTimerRunning ? 'Pause timer' : 'Start timer'}
-              title={isTimerRunning ? 'Pause timer' : 'Start timer'}
-            >
-              {isTimerRunning ? '❚❚' : '▶'}
-            </button>
-          )}
+          <button
+            className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
+            onClick={handleToggleTimer}
+            disabled={task.completed}
+            aria-label={isTimerRunning ? 'Pause timer' : 'Start timer'}
+            title={isTimerRunning ? 'Pause timer' : 'Start timer'}
+          >
+            {isTimerRunning ? '❚❚' : '▶'}
+          </button>
         </div>
 
         {/* Completed subtask visibility toggle */}
@@ -239,10 +239,12 @@ export function TaskItem({
               key={subtask.id}
               task={subtask}
               now={now}
+              ancestorIds={[...ancestorIds, task.id]}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
               onToggleExpand={onToggleExpand}
+              onStartTimer={onStartTimer}
               onUpdateTask={onUpdateTask}
             />
           ))}

@@ -19,6 +19,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
         deleteTask,
         toggleComplete,
         toggleExpand,
+        startTaskTimer,
         updateTask,
     } = useTasks();
 
@@ -97,6 +98,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                     onAddRootTask={handleAddRootTask}
                     onAddSubtask={handleAddSubtask}
                     onToggleExpand={toggleExpand}
+                    onStartTimer={startTaskTimer}
                     onUpdateTask={updateTask}
                 />
                 <CalendarScreen tasks={tasks} />
