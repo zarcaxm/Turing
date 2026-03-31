@@ -68,7 +68,19 @@ function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_tasks_createdAt ON tasks(createdAt);
   `);
 
+  ensureColumn('elapsedTimeMs', 'INTEGER NOT NULL DEFAULT 0');
+  ensureColumn('timerStartedAt', 'INTEGER');
+
   return db;
+}
+
+function ensureColumn(columnName, definition) {
+  const columns = db.prepare('PRAGMA table_info(tasks)').all();
+  const hasColumn = columns.some((column) => column.name === columnName);
+
+  if (!hasColumn) {
+    db.exec(`ALTER TABLE tasks ADD COLUMN ${columnName} ${definition}`);
+  }
 }
 
 function buildTaskTree(rows) {
@@ -88,6 +100,8 @@ function buildTaskTree(rows) {
       completedAt: row.completedAt || undefined,
       expanded: row.expanded === 1,
       context: row.context || undefined,
+      elapsedTimeMs: row.elapsedTimeMs || 0,
+      timerStartedAt: row.timerStartedAt || undefined,
     });
   }
 
@@ -117,9 +131,11 @@ function flattenTasks(tasks, parentId) {
       level: task.level,
       score: task.score,
       createdAt: task.createdAt,
-      completedAt: null,
-      context: task.context || null,
+      completedAt: task.completedAt ?? null,
+      context: task.context ?? null,
       expanded: task.expanded !== false ? 1 : 0,
+      elapsedTimeMs: task.elapsedTimeMs || 0,
+      timerStartedAt: task.timerStartedAt ?? null,
       sortOrder: index,
     });
     if (task.subtasks && task.subtasks.length > 0) {
@@ -143,8 +159,8 @@ function addTask({ title, parentId, context }) {
     : db.prepare('SELECT COUNT(*) as cnt FROM tasks WHERE parentId IS NULL').get().cnt;
 
   db.prepare(`
-    INSERT INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, sortOrder)
-    VALUES (?, ?, ?, 0, ?, ?, ?, NULL, ?, 1, ?)
+    INSERT INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
+    VALUES (?, ?, ?, 0, ?, ?, ?, NULL, ?, 1, 0, NULL, ?)
   `).run(id, parentId, title.trim(), level, score, Date.now(), context || null, sortOrder);
 
   if (parentId) {
@@ -160,14 +176,18 @@ function deleteTask(taskId) {
 }
 
 function toggleComplete(taskId) {
-  const task = db.prepare('SELECT completed FROM tasks WHERE id = ?').get(taskId);
+  const task = db.prepare('SELECT completed, elapsedTimeMs, timerStartedAt FROM tasks WHERE id = ?').get(taskId);
   if (!task) return getAllTasks();
 
   const newCompleted = task.completed === 1 ? 0 : 1;
-  const completedAt = newCompleted === 1 ? Date.now() : null;
+  const now = Date.now();
+  const completedAt = newCompleted === 1 ? now : null;
+  const elapsedTimeMs = task.timerStartedAt
+    ? task.elapsedTimeMs + Math.max(0, now - task.timerStartedAt)
+    : task.elapsedTimeMs;
 
-  db.prepare('UPDATE tasks SET completed = ?, completedAt = ? WHERE id = ?')
-    .run(newCompleted, completedAt, taskId);
+  db.prepare('UPDATE tasks SET completed = ?, completedAt = ?, elapsedTimeMs = ?, timerStartedAt = NULL WHERE id = ?')
+    .run(newCompleted, completedAt, elapsedTimeMs, taskId);
 
   return getAllTasks();
 }
@@ -192,7 +212,7 @@ function updateTask(taskId, updates) {
   }
   if (updates.context !== undefined) {
     setClauses.push('context = ?');
-    values.push(updates.context || null);
+    values.push(updates.context ?? null);
   }
   if (updates.completed !== undefined) {
     setClauses.push('completed = ?', 'completedAt = ?');
@@ -201,6 +221,14 @@ function updateTask(taskId, updates) {
   if (updates.expanded !== undefined) {
     setClauses.push('expanded = ?');
     values.push(updates.expanded ? 1 : 0);
+  }
+  if (updates.elapsedTimeMs !== undefined) {
+    setClauses.push('elapsedTimeMs = ?');
+    values.push(updates.elapsedTimeMs);
+  }
+  if (updates.timerStartedAt !== undefined) {
+    setClauses.push('timerStartedAt = ?');
+    values.push(updates.timerStartedAt ?? null);
   }
 
   if (setClauses.length > 0) {
@@ -214,8 +242,8 @@ function updateTask(taskId, updates) {
 function importFromLocalStorage(nestedTasks) {
   const flatRows = flattenTasks(nestedTasks, null);
   const insertStmt = db.prepare(`
-    INSERT OR IGNORE INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, sortOrder)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT OR IGNORE INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertMany = db.transaction((rows) => {
@@ -223,7 +251,7 @@ function importFromLocalStorage(nestedTasks) {
       insertStmt.run(
         row.id, row.parentId, row.title, row.completed, row.level,
         row.score, row.createdAt, row.completedAt, row.context,
-        row.expanded, row.sortOrder
+        row.expanded, row.elapsedTimeMs, row.timerStartedAt, row.sortOrder
       );
     }
     return rows.length;

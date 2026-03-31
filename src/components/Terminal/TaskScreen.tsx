@@ -4,6 +4,7 @@ import { TaskList } from "../TaskManger/TaskList";
 
 interface TaskScreenProps {
     tasks: Task[];
+    now: number;
     onAddRootTask: (title: string, context?: string) => void;
     onToggleComplete: (taskId: string) => void;
     onDelete: (taskId: string) => void;
@@ -14,6 +15,7 @@ interface TaskScreenProps {
 
 export function TaskScreen({
     tasks,
+    now,
     onAddRootTask,
     onToggleComplete,
     onDelete,
@@ -28,6 +30,7 @@ export function TaskScreen({
 
             <TaskList
                 tasks={tasks}
+                now={now}
                 onToggleComplete={onToggleComplete}
                 onDelete={onDelete}
                 onAddSubtask={onAddSubtask}

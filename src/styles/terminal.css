@@ -547,7 +547,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-checkbox,
 .task-add-btn,
 .task-delete-btn,
-.task-visibility-btn {
+.task-visibility-btn,
+.task-timer-btn {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -584,7 +585,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-expand-btn:hover,
 .task-visibility-btn:hover,
 .task-add-btn:hover,
-.task-delete-btn:hover {
+.task-delete-btn:hover,
+.task-timer-btn:hover {
   background-color: var(--text-primary);
   color: var(--bg-dark);
   box-shadow: 0 0 10px var(--text-primary);
@@ -614,6 +616,40 @@ body[data-theme="dark"] .app-subtitle {
   font-weight: bold;
   font-size: 14px;
   text-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-timer-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.task-timer {
+  color: #f7cc0a;
+  font-weight: bold;
+  font-size: 13px;
+  text-shadow: 0 0 6px rgba(247, 204, 10, 0.45);
+}
+
+.task-timer-btn {
+  width: 28px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-timer-btn.active {
+  border-color: #f7cc0a;
+  color: #f7cc0a;
+  box-shadow: 0 0 8px rgba(247, 204, 10, 0.35);
+}
+
+.task-timer-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .task-visibility-btn {
@@ -1137,12 +1173,17 @@ body[data-theme="dark"] .app-subtitle {
     font-size: 13px;
   }
 
+  .task-timer-group {
+    order: 3;
+  }
+
   .task-expand-btn,
   .task-checkbox,
   .task-add-btn,
   .task-delete-btn,
   .task-context-btn,
-  .task-visibility-btn {
+  .task-visibility-btn,
+  .task-timer-btn {
     flex: 0 0 28px;
     width: 28px;
     height: 28px;

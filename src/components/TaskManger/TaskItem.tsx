@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Task } from '../../types/task';
 import { TaskInput } from './TaskInput';
+import { formatElapsedTime, getTaskElapsedTime, getTaskTotalElapsedTime } from '../../utils/time';
 
 interface TaskItemProps {
   task: Task;
+  now: number;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
@@ -13,6 +15,7 @@ interface TaskItemProps {
 
 export function TaskItem({
   task,
+  now,
   onToggleComplete,
   onDelete,
   onAddSubtask,
@@ -34,7 +37,7 @@ export function TaskItem({
   const handleSaveEdit = () => {
     onUpdateTask(task.id, {
       title: titleValue.trim() || task.title,
-      context: contextValue.trim() || undefined
+      context: contextValue.trim() || null
     });
     setEditingContext(false);
   };
@@ -53,6 +56,25 @@ export function TaskItem({
   const hasVisibleSubtasks = visibleSubtasks.length > 0;
   const isExpanded = task.expanded !== false; // Default to true if undefined
   const isMainTask = task.level === 0;
+  const ownElapsedTime = getTaskElapsedTime(task, now);
+  const totalElapsedTime = getTaskTotalElapsedTime(task, now);
+  const isTimerRunning = Boolean(task.timerStartedAt);
+
+  const handleToggleTimer = () => {
+    if (task.completed) return;
+
+    if (isTimerRunning) {
+      onUpdateTask(task.id, {
+        elapsedTimeMs: ownElapsedTime,
+        timerStartedAt: null
+      });
+      return;
+    }
+
+    onUpdateTask(task.id, {
+      timerStartedAt: Date.now()
+    });
+  };
 
   return (
     <div
@@ -91,6 +113,23 @@ export function TaskItem({
 
         {/* Score badge */}
         <span className="task-score">[{task.score} PTS]</span>
+
+        <div className="task-timer-group">
+          <span className="task-timer">
+            [{hasSubtasks ? `TOTAL ${formatElapsedTime(totalElapsedTime)}` : formatElapsedTime(ownElapsedTime)}]
+          </span>
+          {!hasSubtasks && (
+            <button
+              className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
+              onClick={handleToggleTimer}
+              disabled={task.completed}
+              aria-label={isTimerRunning ? 'Pause timer' : 'Start timer'}
+              title={isTimerRunning ? 'Pause timer' : 'Start timer'}
+            >
+              {isTimerRunning ? '❚❚' : '▶'}
+            </button>
+          )}
+        </div>
 
         {/* Completed subtask visibility toggle */}
         {hasSubtasks && completedSubtaskCount > 0 && (
@@ -199,6 +238,7 @@ export function TaskItem({
             <TaskItem
               key={subtask.id}
               task={subtask}
+              now={now}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}

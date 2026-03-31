@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task } from '../types/task';
 import { assignTaskNumbers } from '../utils/numbering';
 import { deriveTaskScores } from '../utils/scoring';
+import { hasActiveTimer } from '../utils/time';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [now, setNow] = useState(() => Date.now());
   const hasElectronApi = typeof window !== 'undefined' && typeof window.electron !== 'undefined';
 
   const numberedTasks = useMemo(() => assignTaskNumbers(deriveTaskScores(tasks)), [tasks]);
@@ -38,6 +40,20 @@ export function useTasks() {
     }
     init();
   }, [hasElectronApi]);
+
+  useEffect(() => {
+    if (!hasActiveTimer(tasks)) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [tasks]);
 
   const addTask = useCallback(async (title: string, parentId: string | null = null, context?: string) => {
     if (!title.trim() || !hasElectronApi) return;
@@ -72,6 +88,7 @@ export function useTasks() {
   return {
     tasks: numberedTasks,
     loading,
+    now,
     hasElectronApi,
     addTask,
     deleteTask,

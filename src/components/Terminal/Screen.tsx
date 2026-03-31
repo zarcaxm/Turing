@@ -14,6 +14,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
 
     const {
         tasks,
+        now,
         addTask,
         deleteTask,
         toggleComplete,
@@ -90,6 +91,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
             <div className="screen-content">
                 <TaskScreen
                     tasks={tasks}
+                    now={now}
                     onToggleComplete={toggleComplete}
                     onDelete={deleteTask}
                     onAddRootTask={handleAddRootTask}

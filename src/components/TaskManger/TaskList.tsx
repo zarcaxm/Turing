@@ -4,6 +4,7 @@ import { calculateCompletedScoreForRange } from '../../utils/scoring';
 
 interface TaskListProps {
   tasks: Task[];
+  now: number;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
@@ -13,6 +14,7 @@ interface TaskListProps {
 
 export function TaskList({
   tasks,
+  now,
   onToggleComplete,
   onDelete,
   onAddSubtask,
@@ -48,6 +50,7 @@ export function TaskList({
             <TaskItem
               key={task.id}
               task={task}
+              now={now}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}

@@ -67,7 +67,7 @@ export function calculateCompletedScoreForRange(
     if (
       task.completed &&
       isLeafTask &&
-      task.completedAt !== undefined &&
+      task.completedAt != null &&
       task.completedAt >= startTime &&
       task.completedAt <= endTime
     ) {
@@ -101,7 +101,7 @@ export function calculateCompletedScoresByDay(tasks: Task[]): Record<string, num
   for (const task of tasks) {
     const isLeafTask = task.subtasks.length === 0;
 
-    if (task.completed && isLeafTask && task.completedAt !== undefined) {
+    if (task.completed && isLeafTask && task.completedAt != null) {
       const dayKey = getLocalDateKey(task.completedAt);
       totals[dayKey] = (totals[dayKey] ?? 0) + task.score;
     }
