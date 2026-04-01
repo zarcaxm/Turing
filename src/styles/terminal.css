@@ -575,11 +575,25 @@ body[data-theme="dark"] .app-subtitle {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
 
 .task-checkbox.completed {
   background-color: var(--text-primary);
   color: var(--bg-dark);
+}
+
+.task-checkbox.locked {
+  border-style: dashed;
+  border-color: #f7cc0a;
+  color: #f7cc0a;
+  opacity: 1;
+  cursor: not-allowed;
+  box-shadow: 0 0 8px rgba(247, 204, 10, 0.3);
+}
+
+.task-checkbox.locked:disabled {
+  opacity: 1;
 }
 
 .task-expand-btn:hover,
@@ -595,6 +609,13 @@ body[data-theme="dark"] .app-subtitle {
 .task-checkbox:hover {
   border-color: var(--text-highlight);
   box-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-checkbox.locked:hover {
+  background-color: transparent;
+  color: #f7cc0a;
+  border-color: #f7cc0a;
+  box-shadow: 0 0 8px rgba(247, 204, 10, 0.3);
 }
 
 /* Task Title */

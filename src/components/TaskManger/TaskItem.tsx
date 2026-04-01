@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Task } from '../../types/task';
 import { TaskInput } from './TaskInput';
+import { calculateTotalScore } from '../../utils/scoring';
 import { formatElapsedTime, getTaskElapsedTime, getTaskTotalElapsedTime } from '../../utils/time';
 
 interface TaskItemProps {
   task: Task;
   now: number;
   ancestorIds?: string[];
+  hasCompletedAncestor?: boolean;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
@@ -19,6 +21,7 @@ export function TaskItem({
   task,
   now,
   ancestorIds = [],
+  hasCompletedAncestor = false,
   onToggleComplete,
   onDelete,
   onAddSubtask,
@@ -63,6 +66,10 @@ export function TaskItem({
   const ownElapsedTime = getTaskElapsedTime(task, now);
   const totalElapsedTime = getTaskTotalElapsedTime(task, now);
   const isTimerRunning = Boolean(task.timerStartedAt);
+  const isCompletionLocked = hasCompletedAncestor;
+  const displayScore = task.completed
+    ? (hasSubtasks ? calculateTotalScore(task.subtasks) : task.score)
+    : task.score;
 
   const handleToggleTimer = () => {
     if (task.completed) return;
@@ -97,11 +104,16 @@ export function TaskItem({
 
         {/* Checkbox */}
         <button
-          className={`task-checkbox ${task.completed ? 'completed' : ''}`}
-          onClick={() => onToggleComplete(task.id)}
-          aria-label="Toggle completion"
+          className={`task-checkbox ${task.completed ? 'completed' : ''} ${isCompletionLocked ? 'locked' : ''}`}
+          onClick={() => {
+            if (isCompletionLocked) return;
+            onToggleComplete(task.id);
+          }}
+          disabled={isCompletionLocked}
+          aria-label={isCompletionLocked ? 'Completion locked by completed parent task' : 'Toggle completion'}
+          title={isCompletionLocked ? 'Complete the parent task status first to change this subtask' : 'Toggle completion'}
         >
-          {task.completed ? ' ' : ' '}
+          {isCompletionLocked ? '!' : ' '}
         </button>
 
         {/* Task number and title - click to toggle context */}
@@ -114,7 +126,7 @@ export function TaskItem({
         </span>
 
         {/* Score badge */}
-        <span className="task-score">[{task.score} PTS]</span>
+        <span className="task-score">[{displayScore} PTS]</span>
 
         <div className="task-timer-group">
           <span className="task-timer">
@@ -230,9 +242,7 @@ export function TaskItem({
           />
         </div>
       )}
-      {/* 
-      Makes parent task dissapear when checked  */}
-      {isExpanded && hasVisibleSubtasks && !task.completed && (
+      {isExpanded && hasVisibleSubtasks && (
         <div className="task-subtasks">
           {visibleSubtasks.map(subtask => (
             <TaskItem
@@ -240,6 +250,7 @@ export function TaskItem({
               task={subtask}
               now={now}
               ancestorIds={[...ancestorIds, task.id]}
+              hasCompletedAncestor={hasCompletedAncestor || task.completed}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
