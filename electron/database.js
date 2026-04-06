@@ -70,6 +70,7 @@ function initDatabase() {
 
   ensureColumn('elapsedTimeMs', 'INTEGER NOT NULL DEFAULT 0');
   ensureColumn('timerStartedAt', 'INTEGER');
+  ensureColumn('status', "TEXT NOT NULL DEFAULT 'active'");
 
   return db;
 }
@@ -92,6 +93,7 @@ function buildTaskTree(rows) {
       id: row.id,
       number: '',
       title: row.title,
+      status: row.status === 'backlog' ? 'backlog' : 'active',
       completed: row.completed === 1,
       level: row.level,
       score: row.score,
@@ -127,6 +129,7 @@ function flattenTasks(tasks, parentId) {
       id: task.id,
       parentId: parentId,
       title: task.title,
+      status: task.status ?? 'active',
       completed: task.completed ? 1 : 0,
       level: task.level,
       score: task.score,
@@ -150,18 +153,21 @@ function getAllTasks() {
   return buildTaskTree(rows);
 }
 
-function addTask({ title, parentId, context }) {
+function addTask({ title, parentId, context, status }) {
   const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const level = parentId ? (db.prepare('SELECT level FROM tasks WHERE id = ?').get(parentId)?.level ?? 0) + 1 : 0;
+  const inheritedStatus = parentId
+    ? (db.prepare('SELECT status FROM tasks WHERE id = ?').get(parentId)?.status ?? 'active')
+    : (status === 'backlog' ? 'backlog' : 'active');
   const score = Math.max(0, 100 - level * 10);
   const sortOrder = parentId
     ? db.prepare('SELECT COUNT(*) as cnt FROM tasks WHERE parentId = ?').get(parentId).cnt
     : db.prepare('SELECT COUNT(*) as cnt FROM tasks WHERE parentId IS NULL').get().cnt;
 
   db.prepare(`
-    INSERT INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
-    VALUES (?, ?, ?, 0, ?, ?, ?, NULL, ?, 1, 0, NULL, ?)
-  `).run(id, parentId, title.trim(), level, score, Date.now(), context || null, sortOrder);
+    INSERT INTO tasks (id, parentId, title, status, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
+    VALUES (?, ?, ?, ?, 0, ?, ?, ?, NULL, ?, 1, 0, NULL, ?)
+  `).run(id, parentId, title.trim(), inheritedStatus, level, score, Date.now(), context || null, sortOrder);
 
   if (parentId) {
     db.prepare('UPDATE tasks SET expanded = 1 WHERE id = ?').run(parentId);
@@ -251,6 +257,21 @@ function updateTask(taskId, updates) {
     setClauses.push('timerStartedAt = ?');
     values.push(updates.timerStartedAt ?? null);
   }
+  if (updates.status !== undefined) {
+    const nextStatus = updates.status === 'backlog' ? 'backlog' : 'active';
+    db.prepare(`
+      WITH RECURSIVE task_tree(id) AS (
+        SELECT id FROM tasks WHERE id = ?
+        UNION ALL
+        SELECT tasks.id
+        FROM tasks
+        INNER JOIN task_tree ON tasks.parentId = task_tree.id
+      )
+      UPDATE tasks
+      SET status = ?
+      WHERE id IN (SELECT id FROM task_tree)
+    `).run(taskId, nextStatus);
+  }
 
   if (setClauses.length > 0) {
     values.push(taskId);
@@ -263,14 +284,14 @@ function updateTask(taskId, updates) {
 function importFromLocalStorage(nestedTasks) {
   const flatRows = flattenTasks(nestedTasks, null);
   const insertStmt = db.prepare(`
-    INSERT OR IGNORE INTO tasks (id, parentId, title, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT OR IGNORE INTO tasks (id, parentId, title, status, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertMany = db.transaction((rows) => {
     for (const row of rows) {
       insertStmt.run(
-        row.id, row.parentId, row.title, row.completed, row.level,
+        row.id, row.parentId, row.title, row.status, row.completed, row.level,
         row.score, row.createdAt, row.completedAt, row.context,
         row.expanded, row.elapsedTimeMs, row.timerStartedAt, row.sortOrder
       );

@@ -2,7 +2,7 @@ import { Task } from './task';
 
 interface ElectronAPI {
   getTasks: () => Promise<Task[]>;
-  addTask: (args: { title: string; parentId: string | null; context?: string }) => Promise<Task[]>;
+  addTask: (args: { title: string; parentId: string | null; context?: string; status?: Task['status'] }) => Promise<Task[]>;
   deleteTask: (args: { taskId: string }) => Promise<Task[]>;
   toggleComplete: (args: { taskId: string }) => Promise<Task[]>;
   toggleExpand: (args: { taskId: string }) => Promise<Task[]>;

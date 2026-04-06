@@ -5,6 +5,7 @@ import { calculateCompletedScoreForRange } from '../../utils/scoring';
 interface TaskListProps {
   tasks: Task[];
   now: number;
+  mode: 'active' | 'backlog';
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
@@ -16,6 +17,7 @@ interface TaskListProps {
 export function TaskList({
   tasks,
   now,
+  mode,
   onToggleComplete,
   onDelete,
   onAddSubtask,
@@ -23,6 +25,7 @@ export function TaskList({
   onStartTimer,
   onUpdateTask
 }: TaskListProps) {
+  const isBacklog = mode === 'backlog';
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
 
@@ -39,14 +42,14 @@ export function TaskList({
     <div className="task-list">
       <div className="task-stats">
         <div className="stat-item">
-          <span className="stat-label">POINT SUM:</span>
+          <span className="stat-label">{isBacklog ? 'BACKLOG POINT SUM:' : 'POINT SUM:'}</span>
           <span className="stat-value">{totalScore} PTS</span>
         </div>
       </div>
 
       <div className="tasks-container">
         {tasks.length === 0 ? (
-          <div className="no-tasks">NO ACTIVE TASKS</div>
+          <div className="no-tasks">{isBacklog ? 'NO BACKLOG GOALS' : 'NO ACTIVE TASKS'}</div>
         ) : (
           tasks.filter(task => !task.completed).map(task => (
             <TaskItem

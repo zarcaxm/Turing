@@ -70,9 +70,12 @@ export function TaskItem({
   const displayScore = task.completed
     ? (hasSubtasks ? calculateTotalScore(task.subtasks) : task.score)
     : task.score;
+  const isBacklogTask = task.status === 'backlog';
+  const isPlanningOnly = isBacklogTask;
 
   const handleToggleTimer = () => {
     if (task.completed) return;
+    if (isPlanningOnly) return;
 
     if (isTimerRunning) {
       onUpdateTask(task.id, {
@@ -104,16 +107,16 @@ export function TaskItem({
 
         {/* Checkbox */}
         <button
-          className={`task-checkbox ${task.completed ? 'completed' : ''} ${isCompletionLocked ? 'locked' : ''}`}
+          className={`task-checkbox ${task.completed ? 'completed' : ''} ${isCompletionLocked || isPlanningOnly ? 'locked' : ''}`}
           onClick={() => {
-            if (isCompletionLocked) return;
+            if (isCompletionLocked || isPlanningOnly) return;
             onToggleComplete(task.id);
           }}
-          disabled={isCompletionLocked}
-          aria-label={isCompletionLocked ? 'Completion locked by completed parent task' : 'Toggle completion'}
-          title={isCompletionLocked ? 'Complete the parent task status first to change this subtask' : 'Toggle completion'}
+          disabled={isCompletionLocked || isPlanningOnly}
+          aria-label={isPlanningOnly ? 'Backlog tasks cannot be completed' : isCompletionLocked ? 'Completion locked by completed parent task' : 'Toggle completion'}
+          title={isPlanningOnly ? 'Move this goal to active before marking tasks complete' : isCompletionLocked ? 'Complete the parent task status first to change this subtask' : 'Toggle completion'}
         >
-          {isCompletionLocked ? '!' : ' '}
+          {isPlanningOnly ? 'B' : isCompletionLocked ? '!' : ' '}
         </button>
 
         {/* Task number and title - click to toggle context */}
@@ -128,20 +131,22 @@ export function TaskItem({
         {/* Score badge */}
         <span className="task-score">[{displayScore} PTS]</span>
 
-        <div className="task-timer-group">
-          <span className="task-timer">
-            [{hasSubtasks ? `TOTAL ${formatElapsedTime(totalElapsedTime)}` : formatElapsedTime(ownElapsedTime)}]
-          </span>
-          <button
-            className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
-            onClick={handleToggleTimer}
-            disabled={task.completed}
-            aria-label={isTimerRunning ? 'Pause timer' : 'Start timer'}
-            title={isTimerRunning ? 'Pause timer' : 'Start timer'}
-          >
-            {isTimerRunning ? '❚❚' : '▶'}
-          </button>
-        </div>
+        {!isPlanningOnly && (
+          <div className="task-timer-group">
+            <span className="task-timer">
+              [{hasSubtasks ? `TOTAL ${formatElapsedTime(totalElapsedTime)}` : formatElapsedTime(ownElapsedTime)}]
+            </span>
+            <button
+              className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
+              onClick={handleToggleTimer}
+              disabled={task.completed || isPlanningOnly}
+              aria-label={isPlanningOnly ? 'Backlog tasks cannot run timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
+              title={isPlanningOnly ? 'Move this goal to active before starting timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
+            >
+              {isTimerRunning ? '❚❚' : '▶'}
+            </button>
+          </div>
+        )}
 
         {/* Completed subtask visibility toggle */}
         {hasSubtasks && completedSubtaskCount > 0 && (
@@ -188,6 +193,17 @@ export function TaskItem({
         >
           ✎
         </button>
+
+        {isMainTask && (
+          <button
+            className={`task-status-btn ${isBacklogTask ? 'is-backlog' : 'is-active'}`}
+            onClick={() => onUpdateTask(task.id, { status: isBacklogTask ? 'active' : 'backlog' })}
+            aria-label={isBacklogTask ? 'Move goal to active' : 'Move goal to backlog'}
+            title={isBacklogTask ? 'Move goal to active' : 'Move goal to backlog'}
+          >
+            [{isBacklogTask ? 'ACTIVATE' : 'BACKLOG'}]
+          </button>
+        )}
       </div>
 
       {/* Context display/edit */}

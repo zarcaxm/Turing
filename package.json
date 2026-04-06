@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "edev": "npm run electron:dev",
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "electron:build": "npm run build && electron-builder",
+    "electron:build": "npm run build && electron-builder --linux AppImage",
+    "electron:build:deb": "npm run build && electron-builder --linux deb",
+    "electron:build:all": "npm run build && electron-builder",
     "electron": "electron .",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "postinstall": "electron-rebuild -f -w better-sqlite3"

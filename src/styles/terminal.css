@@ -291,6 +291,32 @@ body[data-theme="dark"] .app-subtitle {
   flex-direction: column;
 }
 
+.tasks-panel {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  padding: 6px 12px;
+  transition: all 0.2s;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+.view-toggle:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+  text-shadow: none;
+}
+
 .calendar-screen {
   min-width: 0;
   height: 100%;
@@ -548,7 +574,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-add-btn,
 .task-delete-btn,
 .task-visibility-btn,
-.task-timer-btn {
+.task-timer-btn,
+.task-status-btn {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -600,7 +627,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-visibility-btn:hover,
 .task-add-btn:hover,
 .task-delete-btn:hover,
-.task-timer-btn:hover {
+.task-timer-btn:hover,
+.task-status-btn:hover {
   background-color: var(--text-primary);
   color: var(--bg-dark);
   box-shadow: 0 0 10px var(--text-primary);
@@ -665,6 +693,12 @@ body[data-theme="dark"] .app-subtitle {
   border-color: #f7cc0a;
   color: #f7cc0a;
   box-shadow: 0 0 8px rgba(247, 204, 10, 0.35);
+}
+
+.task-status-btn.is-backlog {
+  border-color: #f7cc0a;
+  color: #f7cc0a;
+  box-shadow: 0 0 8px rgba(247, 204, 10, 0.25);
 }
 
 .task-timer-btn:disabled {
@@ -1136,7 +1170,8 @@ body[data-theme="dark"] .app-subtitle {
   }
 
   .theme-toggle,
-  .fullscreen-toggle {
+  .fullscreen-toggle,
+  .view-toggle {
     flex: 1 1 100%;
     font-size: 13px;
     text-align: center;

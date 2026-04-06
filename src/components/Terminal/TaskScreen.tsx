@@ -5,6 +5,7 @@ import { TaskList } from "../TaskManger/TaskList";
 interface TaskScreenProps {
     tasks: Task[];
     now: number;
+    mode: 'active' | 'backlog';
     onAddRootTask: (title: string, context?: string) => void;
     onToggleComplete: (taskId: string) => void;
     onDelete: (taskId: string) => void;
@@ -17,6 +18,7 @@ interface TaskScreenProps {
 export function TaskScreen({
     tasks,
     now,
+    mode,
     onAddRootTask,
     onToggleComplete,
     onDelete,
@@ -25,14 +27,21 @@ export function TaskScreen({
     onStartTimer,
     onUpdateTask,
 }: TaskScreenProps) {
+    const isBacklog = mode === 'backlog';
+    const placeholder = isBacklog ? '> NEW BACKLOG GOAL' : '> NEW GOAL';
 
     return (
         <div className="task-screen">
-            <TaskInput onAddTask={onAddRootTask} autoFocus={true} />
+            <TaskInput
+                onAddTask={onAddRootTask}
+                autoFocus={true}
+                placeholder={placeholder}
+            />
 
             <TaskList
                 tasks={tasks}
                 now={now}
+                mode={mode}
                 onToggleComplete={onToggleComplete}
                 onDelete={onDelete}
                 onAddSubtask={onAddSubtask}

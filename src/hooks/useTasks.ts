@@ -55,9 +55,14 @@ export function useTasks() {
     };
   }, [tasks]);
 
-  const addTask = useCallback(async (title: string, parentId: string | null = null, context?: string) => {
+  const addTask = useCallback(async (
+    title: string,
+    parentId: string | null = null,
+    context?: string,
+    status: Task['status'] = 'active'
+  ) => {
     if (!title.trim() || !hasElectronApi) return;
-    const updatedTasks = await window.electron.addTask({ title, parentId, context });
+    const updatedTasks = await window.electron.addTask({ title, parentId, context, status });
     setTasks(updatedTasks);
   }, [hasElectronApi]);
 

@@ -11,6 +11,7 @@ interface ScreenProps {
 
 export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
     const isWebMode = typeof window !== 'undefined' && !window.electron;
+    type ViewMode = 'active' | 'backlog';
 
     const {
         tasks,
@@ -25,6 +26,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
 
     type Theme = 'dark' | 'light';
 
+    const [viewMode, setViewMode] = useState<ViewMode>('active');
     const [theme, setTheme] = useState<Theme>(() => {
         const savedTheme = localStorage.getItem('turing_theme');
         return (savedTheme as Theme) || 'dark';
@@ -55,12 +57,17 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
     };
 
     const handleAddRootTask = (title: string, context?: string) => {
-        addTask(title, null, context);
+        addTask(title, null, context, viewMode);
     };
 
     const handleAddSubtask = (parentId: string, title: string, context?: string) => {
         addTask(title, parentId, context);
     };
+
+    const visibleTasks = useMemo(
+        () => tasks.filter(task => task.status === viewMode),
+        [tasks, viewMode]
+    );
 
     return (
         <div className="app">
@@ -72,6 +79,13 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                 )}
                 <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
                 <div className="header-controls">
+                    <button
+                        className="view-toggle"
+                        onClick={() => setViewMode(current => current === 'active' ? 'backlog' : 'active')}
+                        aria-label={viewMode === 'active' ? 'Show backlog' : 'Show active goals'}
+                    >
+                        [{viewMode === 'active' ? 'BACKLOG' : 'ACTIVE'}]
+                    </button>
                     <button
                         className="fullscreen-toggle"
                         onClick={() => void onToggleFullscreen()}
@@ -90,17 +104,20 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
             </div>
 
             <div className="screen-content">
-                <TaskScreen
-                    tasks={tasks}
-                    now={now}
-                    onToggleComplete={toggleComplete}
-                    onDelete={deleteTask}
-                    onAddRootTask={handleAddRootTask}
-                    onAddSubtask={handleAddSubtask}
-                    onToggleExpand={toggleExpand}
-                    onStartTimer={startTaskTimer}
-                    onUpdateTask={updateTask}
-                />
+                <div className="tasks-panel">
+                    <TaskScreen
+                        tasks={visibleTasks}
+                        now={now}
+                        mode={viewMode}
+                        onToggleComplete={toggleComplete}
+                        onDelete={deleteTask}
+                        onAddRootTask={handleAddRootTask}
+                        onAddSubtask={handleAddSubtask}
+                        onToggleExpand={toggleExpand}
+                        onStartTimer={startTaskTimer}
+                        onUpdateTask={updateTask}
+                    />
+                </div>
                 <CalendarScreen tasks={tasks} />
             </div>
         </div>
