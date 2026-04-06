@@ -11,7 +11,7 @@ interface TaskScreenProps {
     onDelete: (taskId: string) => void;
     onAddSubtask: (parentId: string, title: string, context?: string) => void;
     onToggleExpand: (taskId: string) => void;
-    onStartTimer: (taskId: string, ancestorIds: string[]) => void;
+    onStartTimer: (taskId: string) => void;
     onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 

@@ -7,20 +7,18 @@ import { formatElapsedTime, getTaskElapsedTime, getTaskTotalElapsedTime } from '
 interface TaskItemProps {
   task: Task;
   now: number;
-  ancestorIds?: string[];
   hasCompletedAncestor?: boolean;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
   onToggleExpand: (taskId: string) => void;
-  onStartTimer: (taskId: string, ancestorIds: string[]) => void;
+  onStartTimer: (taskId: string) => void;
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
 }
 
 export function TaskItem({
   task,
   now,
-  ancestorIds = [],
   hasCompletedAncestor = false,
   onToggleComplete,
   onDelete,
@@ -85,7 +83,7 @@ export function TaskItem({
       return;
     }
 
-    onStartTimer(task.id, ancestorIds);
+    onStartTimer(task.id);
   };
 
   return (
@@ -265,7 +263,6 @@ export function TaskItem({
               key={subtask.id}
               task={subtask}
               now={now}
-              ancestorIds={[...ancestorIds, task.id]}
               hasCompletedAncestor={hasCompletedAncestor || task.completed}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}

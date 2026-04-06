@@ -6,7 +6,7 @@ interface ElectronAPI {
   deleteTask: (args: { taskId: string }) => Promise<Task[]>;
   toggleComplete: (args: { taskId: string }) => Promise<Task[]>;
   toggleExpand: (args: { taskId: string }) => Promise<Task[]>;
-  startTaskTimer: (args: { taskId: string; ancestorIds: string[] }) => Promise<Task[]>;
+  startTaskTimer: (args: { taskId: string }) => Promise<Task[]>;
   updateTask: (args: { taskId: string; updates: Partial<Task> }) => Promise<Task[]>;
   importFromLocalStorage: (args: { tasks: Task[] }) => Promise<number>;
   getTasksByDateRange: (args: { startDate: number; endDate: number }) => Promise<Task[]>;

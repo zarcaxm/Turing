@@ -208,9 +208,8 @@ function toggleExpand(taskId) {
   return getAllTasks();
 }
 
-function startTaskTimer(taskId, ancestorIds = []) {
+function startTaskTimer(taskId) {
   const now = Date.now();
-  const taskIds = Array.from(new Set([taskId, ...ancestorIds]));
   const updateStmt = db.prepare(`
     UPDATE tasks
     SET timerStartedAt = ?
@@ -219,13 +218,7 @@ function startTaskTimer(taskId, ancestorIds = []) {
       AND timerStartedAt IS NULL
   `);
 
-  const startTimers = db.transaction((ids) => {
-    for (const id of ids) {
-      updateStmt.run(now, id);
-    }
-  });
-
-  startTimers(taskIds);
+  updateStmt.run(now, taskId);
   return getAllTasks();
 }
 

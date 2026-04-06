@@ -84,9 +84,9 @@ export function useTasks() {
     setTasks(updatedTasks);
   }, [hasElectronApi]);
 
-  const startTaskTimer = useCallback(async (taskId: string, ancestorIds: string[] = []) => {
+  const startTaskTimer = useCallback(async (taskId: string) => {
     if (!hasElectronApi) return;
-    const updatedTasks = await window.electron.startTaskTimer({ taskId, ancestorIds });
+    const updatedTasks = await window.electron.startTaskTimer({ taskId });
     setTasks(updatedTasks);
   }, [hasElectronApi]);
 
