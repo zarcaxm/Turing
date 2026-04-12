@@ -1,6 +1,6 @@
 {
   "name": "hyperion-task-manager",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Creative sci-fi inspired task platform with nested subtasks",
   "main": "electron/main.js",
   "scripts": {
@@ -80,12 +80,14 @@
         "AppImage",
         "deb"
       ],
+      "artifactName": "Hyperion-Task-Manager-${version}.${ext}",
       "maintainer": "zarcaxm@users.noreply.github.com"
     },
     "mac": {
       "target": [
         "dmg"
-      ]
+      ],
+      "artifactName": "Hyperion-Task-Manager-${version}-${arch}.${ext}"
     }
   }
 }
