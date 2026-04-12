@@ -8,6 +8,7 @@ interface TaskItemProps {
   task: Task;
   now: number;
   hasCompletedAncestor?: boolean;
+  forceShowCompletedTasks?: boolean;
   onToggleComplete: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onAddSubtask: (parentId: string, title: string, context?: string) => void;
@@ -20,6 +21,7 @@ export function TaskItem({
   task,
   now,
   hasCompletedAncestor = false,
+  forceShowCompletedTasks = false,
   onToggleComplete,
   onDelete,
   onAddSubtask,
@@ -55,7 +57,8 @@ export function TaskItem({
 
   const hasSubtasks = task.subtasks.length > 0;
   const completedSubtaskCount = task.subtasks.filter(subtask => subtask.completed).length;
-  const visibleSubtasks = showCompletedSubtasks
+  const shouldShowCompletedSubtasks = forceShowCompletedTasks || showCompletedSubtasks;
+  const visibleSubtasks = shouldShowCompletedSubtasks
     ? task.subtasks
     : task.subtasks.filter(subtask => !subtask.completed);
   const hasVisibleSubtasks = visibleSubtasks.length > 0;
@@ -149,12 +152,13 @@ export function TaskItem({
         {/* Completed subtask visibility toggle */}
         {hasSubtasks && completedSubtaskCount > 0 && (
           <button
-            className={`task-visibility-btn ${showCompletedSubtasks ? 'active' : ''}`}
+            className={`task-visibility-btn ${shouldShowCompletedSubtasks ? 'active' : ''}`}
             onClick={() => setShowCompletedSubtasks(current => !current)}
-            aria-label={showCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
-            title={showCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+            aria-label={shouldShowCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+            title={forceShowCompletedTasks ? 'Completed subtasks are visible because checked goals are being shown' : shouldShowCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+            disabled={forceShowCompletedTasks}
           >
-            {showCompletedSubtasks ? '◉' : '○'}
+            {shouldShowCompletedSubtasks ? '◉' : '○'}
           </button>
         )}
 
@@ -264,6 +268,7 @@ export function TaskItem({
               task={subtask}
               now={now}
               hasCompletedAncestor={hasCompletedAncestor || task.completed}
+              forceShowCompletedTasks={forceShowCompletedTasks}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}

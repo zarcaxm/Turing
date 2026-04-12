@@ -460,6 +460,9 @@ body[data-theme="dark"] .app-subtitle {
 .task-stats {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid var(--border-color);
@@ -479,6 +482,31 @@ body[data-theme="dark"] .app-subtitle {
   color: var(--text-primary);
   font-weight: bold;
   text-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-list-visibility-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 12px;
+  padding: 6px 10px;
+  transition: all 0.2s;
+  text-shadow: 0 0 5px var(--text-primary);
+}
+
+.task-list-visibility-btn:hover {
+  background-color: var(--text-primary);
+  color: var(--bg-dark);
+  box-shadow: 0 0 10px var(--text-primary);
+  text-shadow: none;
+}
+
+.task-list-visibility-btn.active {
+  border-color: var(--text-highlight);
+  color: var(--text-highlight);
+  box-shadow: 0 0 10px var(--glow-color);
 }
 
 /* Task List Container */
