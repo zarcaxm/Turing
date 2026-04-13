@@ -68,6 +68,7 @@ export function useTasks() {
 
   const deleteTask = useCallback(async (taskId: string) => {
     if (!hasElectronApi) return;
+
     const updatedTasks = await window.electron.deleteTask({ taskId });
     setTasks(updatedTasks);
   }, [hasElectronApi]);

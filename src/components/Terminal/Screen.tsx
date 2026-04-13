@@ -1,5 +1,6 @@
 import { useTasks } from "@/hooks/useTasks";
 import { useEffect, useMemo, useState } from "react";
+import { Task } from "@/types/task";
 import { calculateCompletedScoreForRange } from "@/utils/scoring";
 import { TaskScreen } from "./TaskScreen";
 import { CalendarScreen } from "./CalendarScreen";
@@ -7,6 +8,28 @@ import { CalendarScreen } from "./CalendarScreen";
 interface ScreenProps {
     isFullscreen: boolean;
     onToggleFullscreen: () => void | Promise<void>;
+}
+
+interface PendingDeleteState {
+    id: string;
+    title: string;
+    level: number;
+    hasSubtasks: boolean;
+}
+
+function findTaskById(tasks: Task[], taskId: string): Task | null {
+    for (const task of tasks) {
+        if (task.id === taskId) {
+            return task;
+        }
+
+        const nestedMatch = findTaskById(task.subtasks, taskId);
+        if (nestedMatch) {
+            return nestedMatch;
+        }
+    }
+
+    return null;
 }
 
 export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
@@ -31,6 +54,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
         const savedTheme = localStorage.getItem('turing_theme');
         return (savedTheme as Theme) || 'dark';
     });
+    const [pendingDelete, setPendingDelete] = useState<PendingDeleteState | null>(null);
 
     const todayScore = useMemo(() => {
         const startOfToday = new Date();
@@ -51,6 +75,24 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
         localStorage.setItem('turing_theme', theme);
     }, [theme]);
 
+    useEffect(() => {
+        if (!pendingDelete) {
+            return;
+        }
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setPendingDelete(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [pendingDelete]);
+
 
     const toggleTheme = () => {
         setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
@@ -62,6 +104,29 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
 
     const handleAddSubtask = (parentId: string, title: string, context?: string) => {
         addTask(title, parentId, context);
+    };
+
+    const handleRequestDelete = (taskId: string) => {
+        const task = findTaskById(tasks, taskId);
+        if (!task) {
+            return;
+        }
+
+        setPendingDelete({
+            id: task.id,
+            title: task.title,
+            level: task.level,
+            hasSubtasks: task.subtasks.length > 0,
+        });
+    };
+
+    const handleConfirmDelete = () => {
+        if (!pendingDelete) {
+            return;
+        }
+
+        void deleteTask(pendingDelete.id);
+        setPendingDelete(null);
     };
 
     const visibleTasks = useMemo(
@@ -110,7 +175,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                         now={now}
                         mode={viewMode}
                         onToggleComplete={toggleComplete}
-                        onDelete={deleteTask}
+                        onDelete={handleRequestDelete}
                         onAddRootTask={handleAddRootTask}
                         onAddSubtask={handleAddSubtask}
                         onToggleExpand={toggleExpand}
@@ -120,6 +185,49 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                 </div>
                 <CalendarScreen tasks={tasks} />
             </div>
+
+            {pendingDelete && (
+                <div
+                    className="confirm-modal-backdrop"
+                    role="presentation"
+                    onClick={() => setPendingDelete(null)}
+                >
+                    <div
+                        className="confirm-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="delete-confirm-title"
+                        aria-describedby="delete-confirm-description"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="confirm-modal-title" id="delete-confirm-title">
+                            CONFIRM DELETE
+                        </div>
+                        <div className="confirm-modal-copy" id="delete-confirm-description">
+                            Delete {pendingDelete.level === 0 ? 'goal' : 'task'} "{pendingDelete.title}"?
+                        </div>
+                        {pendingDelete.hasSubtasks && (
+                            <div className="confirm-modal-warning">
+                                This will also delete all nested subtasks.
+                            </div>
+                        )}
+                        <div className="confirm-modal-actions">
+                            <button
+                                className="confirm-modal-btn"
+                                onClick={() => setPendingDelete(null)}
+                            >
+                                [CANCEL]
+                            </button>
+                            <button
+                                className="confirm-modal-btn is-danger"
+                                onClick={handleConfirmDelete}
+                            >
+                                [DELETE]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
