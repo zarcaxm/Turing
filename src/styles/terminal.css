@@ -691,34 +691,35 @@ body[data-theme="dark"] .app-subtitle {
 .task-delete-btn,
 .task-visibility-btn,
 .task-timer-btn,
-.task-status-btn {
+.task-status-btn,
+.task-context-btn {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   cursor: pointer;
   font-family: 'Courier New', 'Consolas', monospace;
   font-size: 14px;
-  padding: 4px 8px;
+  height: 28px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .task-expand-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .task-checkbox {
-  width: 24px;
-  height: 24px;
+  width: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-weight: bold;
+}
+
+.task-add-btn {
+  width: 28px;
+  padding: 0;
 }
 
 .task-checkbox.completed {
@@ -798,11 +799,7 @@ body[data-theme="dark"] .app-subtitle {
 
 .task-timer-btn {
   width: 28px;
-  height: 24px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .task-timer-btn.active {
@@ -817,6 +814,10 @@ body[data-theme="dark"] .app-subtitle {
   box-shadow: 0 0 8px var(--warning-glow-soft);
 }
 
+.task-status-btn {
+  padding: 0 6px;
+}
+
 .task-timer-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -824,12 +825,8 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .task-visibility-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .task-visibility-btn.active {
@@ -840,12 +837,8 @@ body[data-theme="dark"] .app-subtitle {
 /* Delete Button */
 .task-delete-btn {
   font-size: 20px;
-  width: 24px;
-  height: 24px;
+  width: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .task-delete-btn:hover {
@@ -936,19 +929,8 @@ body[data-theme="dark"] .app-subtitle {
 
 /* Context Button */
 .task-context-btn {
-  background: none;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  cursor: pointer;
-  font-family: 'Courier New', 'Consolas', monospace;
-  font-size: 14px;
-  width: 24px;
-  height: 24px;
+  width: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
 }
 
 .task-context-btn:hover {
@@ -1484,7 +1466,8 @@ body[data-theme="light"] .task-checkbox:hover {
   .task-delete-btn,
   .task-context-btn,
   .task-visibility-btn,
-  .task-timer-btn {
+  .task-timer-btn,
+  .task-status-btn {
     flex: 0 0 28px;
     width: 28px;
     height: 28px;

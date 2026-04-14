@@ -102,6 +102,7 @@ export function TaskItem({
             className="task-expand-btn"
             onClick={() => onToggleExpand(task.id)}
             aria-label={isExpanded ? "Collapse" : "Expand"}
+            title={isExpanded ? 'Collapse subtasks' : 'Expand subtasks'}
           >
             {isExpanded ? '▼' : '►'}
           </button>
@@ -116,7 +117,7 @@ export function TaskItem({
           }}
           disabled={isCompletionLocked || isPlanningOnly}
           aria-label={isPlanningOnly ? 'Backlog tasks cannot be completed' : isCompletionLocked ? 'Completion locked by completed parent task' : 'Toggle completion'}
-          title={isPlanningOnly ? 'Move this goal to active before marking tasks complete' : isCompletionLocked ? 'Complete the parent task status first to change this subtask' : 'Toggle completion'}
+          title={isPlanningOnly ? 'Activate this goal to mark tasks complete' : isCompletionLocked ? 'Uncheck the parent task first' : 'Toggle completion'}
         >
           {isPlanningOnly ? 'B' : isCompletionLocked ? '!' : ' '}
         </button>
@@ -143,7 +144,7 @@ export function TaskItem({
               onClick={handleToggleTimer}
               disabled={task.completed || isPlanningOnly}
               aria-label={isPlanningOnly ? 'Backlog tasks cannot run timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
-              title={isPlanningOnly ? 'Move this goal to active before starting timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
+              title={isPlanningOnly ? 'Activate this goal to run timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
             >
               {isTimerRunning ? '❚❚' : '▶'}
             </button>
@@ -156,7 +157,7 @@ export function TaskItem({
             className={`task-visibility-btn ${shouldShowCompletedSubtasks ? 'active' : ''}`}
             onClick={() => setShowCompletedSubtasks(current => !current)}
             aria-label={shouldShowCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
-            title={forceShowCompletedTasks ? 'Completed subtasks are visible because checked goals are being shown' : shouldShowCompletedSubtasks ? 'Hide completed subtasks' : 'Show completed subtasks'}
+            title={forceShowCompletedTasks ? 'Showing checked subtasks with checked goals' : shouldShowCompletedSubtasks ? 'Hide checked subtasks' : 'Show checked subtasks'}
             disabled={forceShowCompletedTasks}
           >
             {shouldShowCompletedSubtasks ? '◉' : '○'}
@@ -171,6 +172,7 @@ export function TaskItem({
               disabled={task.completed}
               onClick={() => setShowInput(!showInput)}
               aria-label="Add subtask"
+              title="Add subtask"
             >
               +
             </button>
@@ -183,6 +185,7 @@ export function TaskItem({
           className="task-delete-btn"
           onClick={() => onDelete(task.id)}
           aria-label="Delete task"
+          title="Delete task"
         >
           ×
         </button>
@@ -192,7 +195,7 @@ export function TaskItem({
           className="task-context-btn"
           onClick={() => setEditingContext(!editingContext)}
           aria-label="Edit context"
-          title="Edit context/details"
+          title="Edit task details"
         >
           :
         </button>
