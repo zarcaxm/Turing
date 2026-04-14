@@ -28,6 +28,7 @@ export function TaskList({
 }: TaskListProps) {
   const [showCompletedGoals, setShowCompletedGoals] = useState(false);
   const isBacklog = mode === 'backlog';
+  const canShowCompletedGoals = !isBacklog;
   const startOfToday = new Date(now);
   startOfToday.setHours(0, 0, 0, 0);
 
@@ -48,12 +49,12 @@ export function TaskList({
     endOfTodayMs
   );
   const visibleTasks = useMemo(
-    () => showCompletedGoals
+    () => canShowCompletedGoals && showCompletedGoals
       ? tasks.filter(task => !task.completed || isCompletedToday(task))
       : tasks.filter(task => !task.completed),
-    [showCompletedGoals, tasks, startOfTodayMs, endOfTodayMs]
+    [canShowCompletedGoals, showCompletedGoals, tasks, startOfTodayMs, endOfTodayMs]
   );
-  const hasCompletedGoalsToday = tasks.some(isCompletedToday);
+  const hasCompletedGoalsToday = canShowCompletedGoals && tasks.some(isCompletedToday);
 
   return (
     <div className="task-list">
@@ -83,7 +84,7 @@ export function TaskList({
               key={task.id}
               task={task}
               now={now}
-              forceShowCompletedTasks={showCompletedGoals}
+              forceShowCompletedTasks={canShowCompletedGoals && showCompletedGoals}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}

@@ -57,7 +57,10 @@ export function TaskItem({
 
   const hasSubtasks = task.subtasks.length > 0;
   const completedSubtaskCount = task.subtasks.filter(subtask => subtask.completed).length;
-  const shouldShowCompletedSubtasks = forceShowCompletedTasks || showCompletedSubtasks;
+  const isBacklogTask = task.status === 'backlog';
+  const isPlanningOnly = isBacklogTask;
+  const canShowCompletedSubtasks = !isBacklogTask;
+  const shouldShowCompletedSubtasks = canShowCompletedSubtasks && (forceShowCompletedTasks || showCompletedSubtasks);
   const visibleSubtasks = shouldShowCompletedSubtasks
     ? task.subtasks
     : task.subtasks.filter(subtask => !subtask.completed);
@@ -71,8 +74,6 @@ export function TaskItem({
   const displayScore = task.completed
     ? (hasSubtasks ? calculateTotalScore(task.subtasks) : task.score)
     : task.score;
-  const isBacklogTask = task.status === 'backlog';
-  const isPlanningOnly = isBacklogTask;
 
   const handleToggleTimer = () => {
     if (task.completed) return;
@@ -150,7 +151,7 @@ export function TaskItem({
         )}
 
         {/* Completed subtask visibility toggle */}
-        {hasSubtasks && completedSubtaskCount > 0 && (
+        {canShowCompletedSubtasks && hasSubtasks && completedSubtaskCount > 0 && (
           <button
             className={`task-visibility-btn ${shouldShowCompletedSubtasks ? 'active' : ''}`}
             onClick={() => setShowCompletedSubtasks(current => !current)}
