@@ -194,7 +194,7 @@ export function TaskItem({
           aria-label="Edit context"
           title="Edit context/details"
         >
-          ✎
+          :
         </button>
 
         {isMainTask && (
