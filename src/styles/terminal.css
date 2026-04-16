@@ -1267,7 +1267,7 @@ body[data-theme="light"] .task-checkbox:hover {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   #root {
     align-items: stretch;
   }
@@ -1293,6 +1293,10 @@ body[data-theme="light"] .task-checkbox:hover {
 
   .screen-content {
     grid-template-columns: 1fr;
+  }
+
+  .calendar-screen {
+    display: none;
   }
 
   .app-header {
