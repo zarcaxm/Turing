@@ -35,6 +35,7 @@ function findTaskById(tasks: Task[], taskId: string): Task | null {
 export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
     const isWebMode = typeof window !== 'undefined' && !window.electron;
     type ViewMode = 'active' | 'backlog';
+    type MobilePanel = 'tasks' | 'calendar';
 
     const {
         tasks,
@@ -54,6 +55,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
         const savedTheme = localStorage.getItem('turing_theme');
         return (savedTheme as Theme) || 'dark';
     });
+    const [mobilePanel, setMobilePanel] = useState<MobilePanel>('tasks');
     const [pendingDelete, setPendingDelete] = useState<PendingDeleteState | null>(null);
 
     const todayScore = useMemo(() => {
@@ -145,6 +147,13 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                 <div className="header-score">TODAY&apos;S SCORE: {todayScore} PTS</div>
                 <div className="header-controls">
                     <button
+                        className="panel-toggle"
+                        onClick={() => setMobilePanel(current => current === 'tasks' ? 'calendar' : 'tasks')}
+                        aria-label={mobilePanel === 'tasks' ? 'Show completion log' : 'Show task list'}
+                    >
+                        [{mobilePanel === 'tasks' ? 'CALENDAR' : 'TASKS'}]
+                    </button>
+                    <button
                         className="view-toggle"
                         onClick={() => setViewMode(current => current === 'active' ? 'backlog' : 'active')}
                         aria-label={viewMode === 'active' ? 'Show backlog' : 'Show active goals'}
@@ -169,7 +178,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
             </div>
 
             <div className="screen-content">
-                <div className="tasks-panel">
+                <div className={`tasks-panel ${mobilePanel === 'tasks' ? 'is-mobile-active' : ''}`}>
                     <TaskScreen
                         tasks={visibleTasks}
                         now={now}
@@ -183,7 +192,9 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                         onUpdateTask={updateTask}
                     />
                 </div>
-                <CalendarScreen tasks={tasks} />
+                <div className={`calendar-panel ${mobilePanel === 'calendar' ? 'is-mobile-active' : ''}`}>
+                    <CalendarScreen tasks={tasks} />
+                </div>
             </div>
 
             {pendingDelete && (
