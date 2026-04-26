@@ -634,6 +634,7 @@ body[data-theme="dark"] .app-subtitle {
 .task-list {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 30px;
   /* background-color: rgb(56, 52, 52); */
 }
@@ -693,6 +694,7 @@ body[data-theme="dark"] .app-subtitle {
   border: 1px solid var(--text-dim);
   transition: all 0.2s;
   min-width: 0;
+  width: 100%;
 }
 
 .task-content.is-main-task {
@@ -1344,6 +1346,20 @@ body[data-theme="light"] .task-checkbox:hover {
     padding: 18px 14px 12px;
   }
 
+  .task-content {
+    gap: 8px;
+  }
+
+  .task-score,
+  .task-timer-group,
+  .task-visibility-btn,
+  .task-add-btn,
+  .task-delete-btn,
+  .task-context-btn,
+  .task-status-btn {
+    display: none;
+  }
+
   .calendar-screen {
     gap: 10px;
     padding: 12px;
@@ -1373,7 +1389,7 @@ body[data-theme="light"] .task-checkbox:hover {
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   #root {
     align-items: stretch;
   }
@@ -1432,6 +1448,18 @@ body[data-theme="light"] .task-checkbox:hover {
 
   .task-list {
     padding: 16px 8px 8px;
+  }
+
+  .task-expand-btn,
+  .task-reorder-btn,
+  .task-score,
+  .task-timer-group,
+  .task-visibility-btn,
+  .task-add-btn,
+  .task-delete-btn,
+  .task-context-btn,
+  .task-status-btn {
+    display: none;
   }
 
   .task-stats {
@@ -1567,12 +1595,19 @@ body[data-theme="light"] .task-checkbox:hover {
   .task-content {
     gap: 8px;
     padding: 10px 8px;
+    align-items: flex-start;
   }
 
   .task-title {
-    flex-basis: 100%;
+    flex: 1 1 calc(100% - 116px);
     order: 1;
     font-size: 15px;
+  }
+
+  .task-expand-btn,
+  .task-reorder-btn,
+  .task-checkbox {
+    order: 0;
   }
 
   .task-score {
@@ -1583,6 +1618,11 @@ body[data-theme="light"] .task-checkbox:hover {
   .task-timer-group {
     order: 3;
     flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .task-timer {
+    overflow-wrap: anywhere;
   }
 
   .task-expand-btn,
@@ -1606,9 +1646,14 @@ body[data-theme="light"] .task-checkbox:hover {
 
   .task-list-visibility-btn,
   .task-status-btn {
+    flex: 1 0 100%;
     width: 100%;
     min-height: 32px;
     justify-content: center;
+  }
+
+  .task-status-btn {
+    order: 4;
   }
 
   .task-subtask-input {
