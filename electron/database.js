@@ -154,7 +154,8 @@ function getAllTasks() {
 }
 
 function addTask({ title, parentId, context, status }) {
-  const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const now = Date.now();
+  const id = `${now}-${Math.random().toString(36).substr(2, 9)}`;
   const level = parentId ? (db.prepare('SELECT level FROM tasks WHERE id = ?').get(parentId)?.level ?? 0) + 1 : 0;
   const inheritedStatus = parentId
     ? (db.prepare('SELECT status FROM tasks WHERE id = ?').get(parentId)?.status ?? 'active')
@@ -167,10 +168,16 @@ function addTask({ title, parentId, context, status }) {
   db.prepare(`
     INSERT INTO tasks (id, parentId, title, status, completed, level, score, createdAt, completedAt, context, expanded, elapsedTimeMs, timerStartedAt, sortOrder)
     VALUES (?, ?, ?, ?, 0, ?, ?, ?, NULL, ?, 1, 0, NULL, ?)
-  `).run(id, parentId, title.trim(), inheritedStatus, level, score, Date.now(), context || null, sortOrder);
+  `).run(id, parentId, title.trim(), inheritedStatus, level, score, now, context || null, sortOrder);
 
   if (parentId) {
-    db.prepare('UPDATE tasks SET expanded = 1 WHERE id = ?').run(parentId);
+    const parentTask = db.prepare('SELECT elapsedTimeMs, timerStartedAt FROM tasks WHERE id = ?').get(parentId);
+    const parentElapsedTimeMs = parentTask?.timerStartedAt
+      ? parentTask.elapsedTimeMs + Math.max(0, now - parentTask.timerStartedAt)
+      : parentTask?.elapsedTimeMs;
+
+    db.prepare('UPDATE tasks SET expanded = 1, elapsedTimeMs = ?, timerStartedAt = NULL WHERE id = ?')
+      .run(parentElapsedTimeMs ?? 0, parentId);
   }
 
   return getAllTasks();
