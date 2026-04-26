@@ -56,6 +56,7 @@ export function TaskItem({
   };
 
   const hasSubtasks = task.subtasks.length > 0;
+  const hasIncompleteSubtasks = task.subtasks.some(subtask => !subtask.completed);
   const completedSubtaskCount = task.subtasks.filter(subtask => subtask.completed).length;
   const isBacklogTask = task.status === 'backlog';
   const isPlanningOnly = isBacklogTask;
@@ -70,6 +71,7 @@ export function TaskItem({
   const ownElapsedTime = getTaskElapsedTime(task, now);
   const totalElapsedTime = getTaskTotalElapsedTime(task, now);
   const isTimerRunning = Boolean(task.timerStartedAt);
+  const shouldShowTimerButton = !isPlanningOnly && (!hasIncompleteSubtasks || isTimerRunning);
   const isCompletionLocked = hasCompletedAncestor;
   const displayScore = task.completed
     ? (hasSubtasks ? calculateTotalScore(task.subtasks) : task.score)
@@ -139,7 +141,8 @@ export function TaskItem({
             <span className="task-timer">
               [{hasSubtasks ? `TOTAL ${formatElapsedTime(totalElapsedTime)}` : formatElapsedTime(ownElapsedTime)}]
             </span>
-            <button
+            {shouldShowTimerButton && (
+              <button
               className={`task-timer-btn ${isTimerRunning ? 'active' : ''}`}
               onClick={handleToggleTimer}
               disabled={task.completed || isPlanningOnly}
@@ -147,7 +150,8 @@ export function TaskItem({
               title={isPlanningOnly ? 'Activate this goal to run timers' : isTimerRunning ? 'Pause timer' : 'Start timer'}
             >
               {isTimerRunning ? '❚❚' : '▶'}
-            </button>
+              </button>
+            )}
           </div>
         )}
 
