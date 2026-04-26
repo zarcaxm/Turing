@@ -105,6 +105,7 @@ function registerIpcHandlers() {
   ipcMain.handle('db:toggleExpand', (_, args) => database.toggleExpand(args.taskId));
   ipcMain.handle('db:startTaskTimer', (_, args) => database.startTaskTimer(args.taskId));
   ipcMain.handle('db:updateTask', (_, args) => database.updateTask(args.taskId, args.updates));
+  ipcMain.handle('db:reorderTasks', (_, args) => database.reorderTasks(args.taskIds));
   ipcMain.handle('db:importFromLocalStorage', (_, args) => database.importFromLocalStorage(args.tasks));
   ipcMain.handle('db:getTasksByDateRange', (_, args) => database.getTasksByDateRange(args.startDate, args.endDate));
   ipcMain.handle('db:getDailyScores', (_, args) => database.getDailyScores(args.startDate, args.endDate));

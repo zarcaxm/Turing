@@ -97,6 +97,12 @@ export function useTasks() {
     setTasks(updatedTasks);
   }, [hasElectronApi]);
 
+  const reorderTasks = useCallback(async (taskIds: string[]) => {
+    if (!hasElectronApi) return;
+    const updatedTasks = await window.electron.reorderTasks({ taskIds });
+    setTasks(updatedTasks);
+  }, [hasElectronApi]);
+
   return {
     tasks: numberedTasks,
     loading,
@@ -108,5 +114,6 @@ export function useTasks() {
     toggleExpand,
     startTaskTimer,
     updateTask,
+    reorderTasks,
   };
 }

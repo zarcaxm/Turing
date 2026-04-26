@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Task } from '../../types/task';
 import { TaskItem } from './TaskItem';
 import { calculateCompletedScoreForRange } from '../../utils/scoring';
@@ -13,6 +13,7 @@ interface TaskListProps {
   onToggleExpand: (taskId: string) => void;
   onStartTimer: (taskId: string) => void;
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
+  onReorderTasks: (taskIds: string[]) => void;
 }
 
 export function TaskList({
@@ -24,9 +25,11 @@ export function TaskList({
   onAddSubtask,
   onToggleExpand,
   onStartTimer,
-  onUpdateTask
+  onUpdateTask,
+  onReorderTasks
 }: TaskListProps) {
   const [showCompletedGoals, setShowCompletedGoals] = useState(false);
+  const [reorderAnimation, setReorderAnimation] = useState<Record<string, 'up' | 'down'>>({});
   const isBacklog = mode === 'backlog';
   const canShowCompletedGoals = !isBacklog;
   const startOfToday = new Date(now);
@@ -55,6 +58,39 @@ export function TaskList({
     [canShowCompletedGoals, showCompletedGoals, tasks, startOfTodayMs, endOfTodayMs]
   );
   const hasCompletedGoalsToday = canShowCompletedGoals && tasks.some(isCompletedToday);
+  const siblingIds = tasks.map(task => task.id);
+
+  const moveTask = (taskId: string, direction: -1 | 1) => {
+    const currentIndex = siblingIds.indexOf(taskId);
+    const nextIndex = currentIndex + direction;
+
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= siblingIds.length) {
+      return;
+    }
+
+    setReorderAnimation({
+      [taskId]: direction === -1 ? 'up' : 'down',
+      [siblingIds[nextIndex]]: direction === -1 ? 'down' : 'up',
+    });
+
+    const nextIds = [...siblingIds];
+    [nextIds[currentIndex], nextIds[nextIndex]] = [nextIds[nextIndex], nextIds[currentIndex]];
+    onReorderTasks(nextIds);
+  };
+
+  useEffect(() => {
+    if (Object.keys(reorderAnimation).length === 0) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setReorderAnimation({});
+    }, 1200);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [reorderAnimation]);
 
   return (
     <div className="task-list">
@@ -85,12 +121,16 @@ export function TaskList({
               task={task}
               now={now}
               forceShowCompletedTasks={canShowCompletedGoals && showCompletedGoals}
+              siblingIds={siblingIds}
+              reorderAnimation={reorderAnimation[task.id]}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onAddSubtask={onAddSubtask}
               onToggleExpand={onToggleExpand}
               onStartTimer={onStartTimer}
               onUpdateTask={onUpdateTask}
+              onMoveTask={moveTask}
+              onReorderTasks={onReorderTasks}
             />
           ))
         )}

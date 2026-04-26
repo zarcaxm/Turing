@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('electron', {
   toggleExpand: (args) => ipcRenderer.invoke('db:toggleExpand', args),
   startTaskTimer: (args) => ipcRenderer.invoke('db:startTaskTimer', args),
   updateTask: (args) => ipcRenderer.invoke('db:updateTask', args),
+  reorderTasks: (args) => ipcRenderer.invoke('db:reorderTasks', args),
   importFromLocalStorage: (args) => ipcRenderer.invoke('db:importFromLocalStorage', args),
   getTasksByDateRange: (args) => ipcRenderer.invoke('db:getTasksByDateRange', args),
   getDailyScores: (args) => ipcRenderer.invoke('db:getDailyScores', args),

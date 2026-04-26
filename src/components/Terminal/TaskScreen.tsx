@@ -13,6 +13,7 @@ interface TaskScreenProps {
     onToggleExpand: (taskId: string) => void;
     onStartTimer: (taskId: string) => void;
     onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
+    onReorderTasks: (taskIds: string[]) => void;
 }
 
 export function TaskScreen({
@@ -26,6 +27,7 @@ export function TaskScreen({
     onToggleExpand,
     onStartTimer,
     onUpdateTask,
+    onReorderTasks,
 }: TaskScreenProps) {
     const isBacklog = mode === 'backlog';
     const placeholder = isBacklog ? '> NEW BACKLOG GOAL' : '> NEW GOAL';
@@ -48,6 +50,7 @@ export function TaskScreen({
                 onToggleExpand={onToggleExpand}
                 onStartTimer={onStartTimer}
                 onUpdateTask={onUpdateTask}
+                onReorderTasks={onReorderTasks}
             />
         </div>
     );

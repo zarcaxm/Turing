@@ -321,8 +321,24 @@ function getDailyScores(startDate, endDate) {
   `).all(startDate, endDate);
 }
 
+function reorderTasks(taskIds) {
+  const updateStmt = db.prepare('UPDATE tasks SET sortOrder = ? WHERE id = ?');
+  const updateMany = db.transaction((ids) => {
+    ids.forEach((id, index) => {
+      updateStmt.run(index, id);
+    });
+  });
+  updateMany(taskIds);
+  return getAllTasks();
+}
+
 function closeDatabase() {
-  if (db) db.close();
+  if (!db) {
+    return;
+  }
+
+  db.close();
+  db = null;
 }
 
 module.exports = {
@@ -334,6 +350,7 @@ module.exports = {
   toggleExpand,
   startTaskTimer,
   updateTask,
+  reorderTasks,
   importFromLocalStorage,
   getTasksByDateRange,
   getDailyScores,

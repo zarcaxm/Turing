@@ -46,6 +46,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
         toggleExpand,
         startTaskTimer,
         updateTask,
+        reorderTasks,
     } = useTasks();
 
     type Theme = 'dark' | 'light';
@@ -190,6 +191,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
                         onToggleExpand={toggleExpand}
                         onStartTimer={startTaskTimer}
                         onUpdateTask={updateTask}
+                        onReorderTasks={reorderTasks}
                     />
                 </div>
                 <div className={`calendar-panel ${mobilePanel === 'calendar' ? 'is-mobile-active' : ''}`}>

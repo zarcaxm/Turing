@@ -725,7 +725,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-visibility-btn,
 .task-timer-btn,
 .task-status-btn,
-.task-context-btn {
+.task-context-btn,
+.task-reorder-btn {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -755,6 +756,72 @@ body[data-theme="dark"] .app-subtitle {
   padding: 0;
 }
 
+.task-reorder-btn {
+  width: 28px;
+  padding: 0;
+  font-size: 12px;
+  transform: translateY(0) scale(1);
+  transition:
+    background-color 0.12s,
+    border-color 0.12s,
+    box-shadow 0.12s,
+    color 0.12s,
+    transform 0.08s;
+}
+
+.task-reorder-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  box-shadow: none;
+}
+
+.task-reorder-btn:not(:disabled):active {
+  transform: translateY(1px) scale(0.88);
+  box-shadow:
+    inset 0 0 8px var(--glow-color),
+    0 0 14px var(--text-primary);
+}
+
+.task-item.is-reordering-up .task-content {
+  animation: task-reorder-up 1200ms cubic-bezier(0.16, 0.95, 0.18, 1);
+}
+
+.task-item.is-reordering-down .task-content {
+  animation: task-reorder-down 1200ms cubic-bezier(0.16, 0.95, 0.18, 1);
+}
+
+@keyframes task-reorder-up {
+  0% {
+    transform: translateY(22px) scale(0.98);
+    box-shadow: 0 0 0 rgba(51, 255, 51, 0);
+  }
+
+  46% {
+    transform: translateY(-5px) scale(1.012);
+    box-shadow: 0 0 16px var(--glow-color);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes task-reorder-down {
+  0% {
+    transform: translateY(-22px) scale(0.98);
+    box-shadow: 0 0 0 rgba(51, 255, 51, 0);
+  }
+
+  46% {
+    transform: translateY(5px) scale(1.012);
+    box-shadow: 0 0 16px var(--glow-color);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
 .task-checkbox.completed {
   background-color: var(--text-primary);
   color: var(--bg-dark);
@@ -778,7 +845,8 @@ body[data-theme="dark"] .app-subtitle {
 .task-add-btn:hover,
 .task-delete-btn:hover,
 .task-timer-btn:hover,
-.task-status-btn:hover {
+.task-status-btn:hover,
+.task-reorder-btn:not(:disabled):hover {
   background-color: var(--text-primary);
   color: var(--bg-dark);
   box-shadow: 0 0 10px var(--text-primary);
@@ -1204,6 +1272,7 @@ body[data-theme="light"] .task-visibility-btn,
 body[data-theme="light"] .task-timer-btn,
 body[data-theme="light"] .task-status-btn,
 body[data-theme="light"] .task-context-btn,
+body[data-theme="light"] .task-reorder-btn,
 body[data-theme="light"] .confirm-modal-btn,
 body[data-theme="light"] .task-context-save,
 body[data-theme="light"] .task-context-cancel {
@@ -1235,6 +1304,7 @@ body[data-theme="light"] .task-visibility-btn:hover,
 body[data-theme="light"] .task-timer-btn:hover,
 body[data-theme="light"] .task-status-btn:hover,
 body[data-theme="light"] .task-context-btn:hover,
+body[data-theme="light"] .task-reorder-btn:not(:disabled):hover,
 body[data-theme="light"] .confirm-modal-btn:hover,
 body[data-theme="light"] .task-context-save:hover {
   background-color: #eee8ff;
@@ -1522,7 +1592,8 @@ body[data-theme="light"] .task-checkbox:hover {
   .task-context-btn,
   .task-visibility-btn,
   .task-timer-btn,
-  .task-status-btn {
+  .task-status-btn,
+  .task-reorder-btn {
     flex: 0 0 28px;
     width: 28px;
     height: 28px;
