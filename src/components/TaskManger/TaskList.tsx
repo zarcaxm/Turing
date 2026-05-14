@@ -61,6 +61,10 @@ export function TaskList({
   const siblingIds = visibleTasks.map(task => task.id);
   const allSiblingIds = tasks.map(task => task.id);
 
+  useEffect(() => {
+    setShowCompletedGoals(false);
+  }, [mode]);
+
   const moveTask = (taskId: string, direction: -1 | 1) => {
     const currentVisibleIndex = siblingIds.indexOf(taskId);
     const nextTaskId = siblingIds[currentVisibleIndex + direction];
