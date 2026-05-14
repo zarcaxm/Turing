@@ -9,6 +9,7 @@ interface TaskItemProps {
   now: number;
   hasCompletedAncestor?: boolean;
   forceShowCompletedTasks?: boolean;
+  parentDisplayNumber?: string;
   siblingIds: string[];
   reorderAnimation?: 'up' | 'down';
   onToggleComplete: (taskId: string) => void;
@@ -26,6 +27,7 @@ export function TaskItem({
   now,
   hasCompletedAncestor = false,
   forceShowCompletedTasks = false,
+  parentDisplayNumber,
   siblingIds,
   reorderAnimation,
   onToggleComplete,
@@ -40,7 +42,7 @@ export function TaskItem({
   const [showInput, setShowInput] = useState(false);
   const [showContext, setShowContext] = useState(true);
   const [editingContext, setEditingContext] = useState(false);
-  const [showCompletedSubtasks, setShowCompletedSubtasks] = useState(true);
+  const [showCompletedSubtasks, setShowCompletedSubtasks] = useState(false);
   const [subtaskReorderAnimation, setSubtaskReorderAnimation] = useState<Record<string, 'up' | 'down'>>({});
   const [titleValue, setTitleValue] = useState(task.title);
   const [contextValue, setContextValue] = useState(task.context || '');
@@ -86,9 +88,13 @@ export function TaskItem({
     ? (hasSubtasks ? calculateTotalScore(task.subtasks) : task.score)
     : task.score;
   const siblingIndex = siblingIds.indexOf(task.id);
+  const displayNumber = siblingIndex >= 0
+    ? parentDisplayNumber
+      ? `${parentDisplayNumber}.${siblingIndex + 1}`
+      : `${siblingIndex + 1}`
+    : task.number;
   const canMoveUp = siblingIndex > 0;
   const canMoveDown = siblingIndex >= 0 && siblingIndex < siblingIds.length - 1;
-  const reorderDirection: -1 | 1 | null = canMoveUp ? -1 : canMoveDown ? 1 : null;
   const animationClass = reorderAnimation ? `is-reordering-${reorderAnimation}` : '';
 
   const handleToggleTimer = () => {
@@ -138,15 +144,26 @@ export function TaskItem({
           </button>
         )}
 
-        <button
-          className="task-reorder-btn"
-          onClick={() => reorderDirection && onMoveTask(task.id, reorderDirection)}
-          disabled={reorderDirection == null}
-          aria-label={reorderDirection === -1 ? 'Move task up' : 'Move task down'}
-          title={reorderDirection === -1 ? 'Move task up' : 'Move task down'}
-        >
-          {reorderDirection === -1 ? '▲' : '▼'}
-        </button>
+        <div className="task-reorder-controls" aria-label="Priority controls">
+          <button
+            className="task-reorder-btn"
+            onClick={() => onMoveTask(task.id, -1)}
+            disabled={!canMoveUp}
+            aria-label="Move task up"
+            title="Move task up"
+          >
+            ▲
+          </button>
+          <button
+            className="task-reorder-btn"
+            onClick={() => onMoveTask(task.id, 1)}
+            disabled={!canMoveDown}
+            aria-label="Move task down"
+            title="Move task down"
+          >
+            ▼
+          </button>
+        </div>
 
         {/* Checkbox */}
         <button
@@ -168,7 +185,7 @@ export function TaskItem({
           onClick={() => task.context && setShowContext(!showContext)}
           style={{ cursor: task.context ? 'pointer' : 'default' }}
         >
-          <span className="task-number">{task.number}.</span> {task.title}
+          <span className="task-number">{displayNumber}.</span> {task.title}
         </span>
 
         {/* Score badge */}
@@ -308,47 +325,56 @@ export function TaskItem({
       )}
       {isExpanded && hasVisibleSubtasks && (
         <div className="task-subtasks">
-          {visibleSubtasks.map(subtask => {
-            const childSiblingIds = task.subtasks.map(childTask => childTask.id);
+          {(() => {
+            const childSiblingIds = visibleSubtasks.map(childTask => childTask.id);
 
             const moveSubtask = (taskId: string, direction: -1 | 1) => {
-              const currentIndex = childSiblingIds.indexOf(taskId);
-              const nextIndex = currentIndex + direction;
+              const currentVisibleIndex = childSiblingIds.indexOf(taskId);
+              const nextTaskId = childSiblingIds[currentVisibleIndex + direction];
 
-              if (currentIndex < 0 || nextIndex < 0 || nextIndex >= childSiblingIds.length) {
+              if (currentVisibleIndex < 0 || !nextTaskId) {
                 return;
               }
 
               setSubtaskReorderAnimation({
                 [taskId]: direction === -1 ? 'up' : 'down',
-                [childSiblingIds[nextIndex]]: direction === -1 ? 'down' : 'up',
+                [nextTaskId]: direction === -1 ? 'down' : 'up',
               });
 
-              const nextIds = [...childSiblingIds];
+              const allChildIds = task.subtasks.map(childTask => childTask.id);
+              const currentIndex = allChildIds.indexOf(taskId);
+              const nextIndex = allChildIds.indexOf(nextTaskId);
+
+              if (currentIndex < 0 || nextIndex < 0) {
+                return;
+              }
+
+              const nextIds = [...allChildIds];
               [nextIds[currentIndex], nextIds[nextIndex]] = [nextIds[nextIndex], nextIds[currentIndex]];
               onReorderTasks(nextIds);
             };
 
-            return (
-            <TaskItem
-              key={subtask.id}
-              task={subtask}
-              now={now}
-              hasCompletedAncestor={hasCompletedAncestor || task.completed}
-              forceShowCompletedTasks={forceShowCompletedTasks}
-              siblingIds={childSiblingIds}
-              reorderAnimation={subtaskReorderAnimation[subtask.id]}
-              onToggleComplete={onToggleComplete}
-              onDelete={onDelete}
-              onAddSubtask={onAddSubtask}
-              onToggleExpand={onToggleExpand}
-              onStartTimer={onStartTimer}
-              onUpdateTask={onUpdateTask}
-              onMoveTask={moveSubtask}
-              onReorderTasks={onReorderTasks}
-            />
-            );
-          })}
+            return visibleSubtasks.map(subtask => (
+              <TaskItem
+                key={subtask.id}
+                task={subtask}
+                now={now}
+                hasCompletedAncestor={hasCompletedAncestor || task.completed}
+                forceShowCompletedTasks={forceShowCompletedTasks}
+                parentDisplayNumber={displayNumber}
+                siblingIds={childSiblingIds}
+                reorderAnimation={subtaskReorderAnimation[subtask.id]}
+                onToggleComplete={onToggleComplete}
+                onDelete={onDelete}
+                onAddSubtask={onAddSubtask}
+                onToggleExpand={onToggleExpand}
+                onStartTimer={onStartTimer}
+                onUpdateTask={onUpdateTask}
+                onMoveTask={moveSubtask}
+                onReorderTasks={onReorderTasks}
+              />
+            ));
+          })()}
         </div>
       )}
     </div>

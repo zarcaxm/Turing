@@ -58,22 +58,30 @@ export function TaskList({
     [canShowCompletedGoals, showCompletedGoals, tasks, startOfTodayMs, endOfTodayMs]
   );
   const hasCompletedGoalsToday = canShowCompletedGoals && tasks.some(isCompletedToday);
-  const siblingIds = tasks.map(task => task.id);
+  const siblingIds = visibleTasks.map(task => task.id);
+  const allSiblingIds = tasks.map(task => task.id);
 
   const moveTask = (taskId: string, direction: -1 | 1) => {
-    const currentIndex = siblingIds.indexOf(taskId);
-    const nextIndex = currentIndex + direction;
+    const currentVisibleIndex = siblingIds.indexOf(taskId);
+    const nextTaskId = siblingIds[currentVisibleIndex + direction];
 
-    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= siblingIds.length) {
+    if (currentVisibleIndex < 0 || !nextTaskId) {
       return;
     }
 
     setReorderAnimation({
       [taskId]: direction === -1 ? 'up' : 'down',
-      [siblingIds[nextIndex]]: direction === -1 ? 'down' : 'up',
+      [nextTaskId]: direction === -1 ? 'down' : 'up',
     });
 
-    const nextIds = [...siblingIds];
+    const currentIndex = allSiblingIds.indexOf(taskId);
+    const nextIndex = allSiblingIds.indexOf(nextTaskId);
+
+    if (currentIndex < 0 || nextIndex < 0) {
+      return;
+    }
+
+    const nextIds = [...allSiblingIds];
     [nextIds[currentIndex], nextIds[nextIndex]] = [nextIds[nextIndex], nextIds[currentIndex]];
     onReorderTasks(nextIds);
   };

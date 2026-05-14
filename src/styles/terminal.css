@@ -759,7 +759,7 @@ body[data-theme="dark"] .app-subtitle {
 }
 
 .task-reorder-btn {
-  width: 28px;
+  width: 22px;
   padding: 0;
   font-size: 12px;
   transform: translateY(0) scale(1);
@@ -769,6 +769,12 @@ body[data-theme="dark"] .app-subtitle {
     box-shadow 0.12s,
     color 0.12s,
     transform 0.08s;
+}
+
+.task-reorder-controls {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
 }
 
 .task-reorder-btn:disabled {
@@ -1585,7 +1591,7 @@ body[data-theme="light"] .task-checkbox:hover {
   }
 
   .task-expand-btn,
-  .task-reorder-btn,
+  .task-reorder-controls,
   .task-checkbox {
     order: 0;
   }
@@ -1617,6 +1623,11 @@ body[data-theme="light"] .task-checkbox:hover {
     flex: 0 0 28px;
     width: 28px;
     height: 28px;
+  }
+
+  .task-reorder-controls {
+    flex: 0 0 auto;
+    gap: 4px;
   }
 
   .task-context {
