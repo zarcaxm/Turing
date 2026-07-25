@@ -12,7 +12,15 @@
       "Bash(npm run electron:*)",
       "Bash(npm ls:*)",
       "Bash(npm rebuild:*)",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(npx tsc *)",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(tee /tmp/vite-dev.log)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173/)",
+      "Bash(netstat -ano)",
+      "Bash(powershell -Command \"Start-Process 'http://localhost:5173/'\")",
+      "Bash(powershell -Command \"Stop-Process -Id 21564 -Force\")"
     ]
   }
 }

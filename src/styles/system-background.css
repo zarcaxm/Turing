@@ -1,0 +1,166 @@
+/* System Background - subtle decorative ASCII art layer */
+
+.system-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.system-background-block {
+  position: absolute;
+  margin: 0;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: pre;
+  color: var(--text-primary);
+  filter: blur(0.2px);
+
+  /* Flicker opacity range - overridden per theme below */
+  --bg-op-min: 0.02;
+  --bg-op-base: 0.06;
+  --bg-op-mid: 0.08;
+  --bg-op-dip: 0.03;
+}
+
+body[data-theme="light"] .system-background-block {
+  --bg-op-min: 0.04;
+  --bg-op-base: 0.09;
+  --bg-op-mid: 0.11;
+  --bg-op-dip: 0.05;
+}
+
+.bg-block-schematic {
+  top: 6%;
+  left: 3%;
+  animation: bg-flicker 14s ease-in-out infinite, bg-drift-a 42s ease-in-out infinite;
+}
+
+.bg-block-sector {
+  top: 8%;
+  right: 4%;
+  animation: bg-flicker 17s ease-in-out infinite 2s, bg-drift-b 50s ease-in-out infinite;
+}
+
+.bg-block-codes {
+  bottom: 10%;
+  left: 4%;
+  animation: bg-flicker 12s ease-in-out infinite 1s, bg-drift-a 46s ease-in-out infinite reverse;
+}
+
+.bg-block-scan {
+  bottom: 7%;
+  right: 5%;
+  animation: bg-flicker 20s ease-in-out infinite 3s, bg-drift-b 38s ease-in-out infinite reverse;
+}
+
+/* Extra blocks placed behind the task list column */
+.bg-block-manifest {
+  top: 26%;
+  left: 32%;
+  animation: bg-flicker 16s ease-in-out infinite 1.5s, bg-drift-b 44s ease-in-out infinite;
+}
+
+.bg-block-bulkhead {
+  top: 46%;
+  left: 6%;
+  animation: bg-flicker 19s ease-in-out infinite 4s, bg-drift-a 48s ease-in-out infinite reverse;
+}
+
+.bg-block-warning {
+  top: 64%;
+  left: 36%;
+  animation: bg-flicker 13s ease-in-out infinite 2.5s, bg-drift-b 40s ease-in-out infinite reverse;
+}
+
+.bg-block-log {
+  top: 82%;
+  left: 8%;
+  animation: bg-flicker 15s ease-in-out infinite 0.5s, bg-drift-a 36s ease-in-out infinite;
+}
+
+@keyframes bg-flicker {
+
+  0%,
+  100% {
+    opacity: var(--bg-op-base);
+  }
+
+  4% {
+    opacity: var(--bg-op-min);
+  }
+
+  6% {
+    opacity: var(--bg-op-base);
+  }
+
+  50% {
+    opacity: var(--bg-op-mid);
+  }
+
+  53% {
+    opacity: var(--bg-op-dip);
+  }
+
+  55% {
+    opacity: var(--bg-op-base);
+  }
+}
+
+@keyframes bg-drift-a {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(4px, -3px);
+  }
+}
+
+@keyframes bg-drift-b {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-4px, 3px);
+  }
+}
+
+/* Responsive scaling - thin out and shrink on smaller screens */
+@media (max-width: 1280px), (max-height: 860px) {
+  .system-background-block {
+    font-size: 10px;
+  }
+
+  .bg-block-scan,
+  .bg-block-warning {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .system-background-block {
+    font-size: 9px;
+  }
+
+  .bg-block-sector,
+  .bg-block-codes,
+  .bg-block-manifest,
+  .bg-block-bulkhead {
+    display: none;
+  }
+}
+
+/* Respect reduced motion preference - keep the art, drop the animation */
+@media (prefers-reduced-motion: reduce) {
+  .system-background-block {
+    animation: none !important;
+  }
+}

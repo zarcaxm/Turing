@@ -4,6 +4,7 @@ import { Task } from "@/types/task";
 import { calculateCompletedScoreForRange } from "@/utils/scoring";
 import { TaskScreen } from "./TaskScreen";
 import { CalendarScreen } from "./CalendarScreen";
+import { SystemBackground } from "./SystemBackground";
 
 interface ScreenProps {
     isFullscreen: boolean;
@@ -139,6 +140,7 @@ export function Screen({ isFullscreen, onToggleFullscreen }: ScreenProps) {
 
     return (
         <div className="app">
+            <SystemBackground />
             <div className="app-header">
                 <h1 className="app-title">HYPERION </h1>
                 <div className="app-subtitle">WEYLAND-YUTANI CORPORATION • SYSTEM V{APP_VERSION}</div>

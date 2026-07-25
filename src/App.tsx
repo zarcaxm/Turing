@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './styles/terminal.css';
 import './styles/crt-effects.css';
+import './styles/system-background.css';
 import { Screen } from './components/Terminal/Screen';
 
 function App() {
