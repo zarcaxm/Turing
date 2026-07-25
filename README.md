@@ -3,6 +3,9 @@ A creative sci-fi inspired task platform designed to make nested planning feel e
 
 <img width="1156" height="731" alt="image" src="https://github.com/user-attachments/assets/aa6db75c-a428-40c6-9952-abf5048fa8f4" />
 
+<img width="1649" height="909" alt="image" src="https://github.com/user-attachments/assets/6013c6f5-8d7d-40fc-b019-c5650ab25c91" />
+
+
 ## Tech Stack
 
 - **Frontend**: React 18 + TypeScript
